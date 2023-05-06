@@ -1,0 +1,55 @@
+
+body {
+    width: 100%;
+    height: 100%;
+    color: #FFF;
+    background-color: #0b0c29;
+}
+
+.navbar{
+    background-color: #000000;
+}
+#topNav{
+    /*background-color: #299e9e;*/
+    height: 45px;
+    width: 480px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+#intro{
+    background: url("../images/iluminating_night.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-color: #000;
+    color: #FFF;
+}
+
+.overlay {
+    height: 750px;
+    background-attachment: fixed;
+}
+
+#aboutme{
+    margin: 15px;
+    border-color: #299e9e;
+}
+#aboutme #propic{
+    width: 170px;
+    height: auto;
+}
+#experience{
+    margin: 15px;
+    border-color: #299e9e;
+}
+#projects{
+    margin: 15px;
+    border-color: #299e9e;
+}
+#contact{
+    margin: 15px;
+    border-color: #299e9e;
+}
