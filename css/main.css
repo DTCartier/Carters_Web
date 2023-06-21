@@ -7,16 +7,16 @@ body {
 }
 
 .navbar{
-    background-color: #000000;
+    background-color: #0b0c29;
 }
 
 #topNav{
     /*background-color: #299e9e;*/
-    height: 40px;
-    width: 480px;
+    /*height: 40px;
+    width: 480px;*/
     position: relative;
     top: 0px;
-    right: 0px;
+    left: 550px;
 }
 
 #intro{
