@@ -9,17 +9,18 @@ body {
 .navbar{
     background-color: #000000;
 }
+
 #topNav{
     /*background-color: #299e9e;*/
-    height: 45px;
+    height: 40px;
     width: 480px;
-    position: absolute;
+    position: relative;
     top: 0px;
     right: 0px;
 }
 
 #intro{
-    background: url("../images/iluminating_night.jpg");
+    background: url("../images/iluminating_night.png");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -29,7 +30,7 @@ body {
 }
 
 .overlay {
-    height: 750px;
+    height: 735px;
     background-attachment: fixed;
 }
 
