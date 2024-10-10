@@ -1,9 +1,14 @@
 
 body {
+    background-image: url("../images/3.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     width: 100%;
-    height: 100%;
-    color: #60f8f8;
-    background-color: #000000;
+    height: 50%;
+    color: #6bb2e8;
+    /*background-color: #16364e;*/
+    
 }
 
 .navbar{
@@ -11,47 +16,82 @@ body {
 }
 
 .nav-link{
-    color: #60f8f8;
+    color: #ffffff;
 }
 .nav-link:hover{
-    background-color: #60f8f8;
+    color: #6bb2e8;
+}
+.thumbnail-container {
+    text-align: center;
+    position: relative;
+}
+h3{
+    text-align: center;
+}
+.img-thumbnail {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    margin: 0 auto;
 }
 #home{
-    /*background: url("../images/iluminating_night.png");*/
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-color: #000;
+    /*background-image: url("../images/3.png");*/
+    /*background-size: cover;*/
+    /*background-position: center;*/
+    /*background-attachment: fixed;
+    background-repeat: no-repeat;*/
+    /*background-color: #6bb2e8;*/
     color: #FFF;
+    /*max-width: 120%;*/
+    /*filter: blur(2px);
+    -webkit-filter: blur(2px);*/
 }
 
 .overlay {
-    height: 735px;
+    height: 780px;
     background-attachment: fixed;
+    /*filter: blur(2px);
+    -webkit-filter: blur(2px);*/
+}
+.bg-turq {
+    background-color: #222527;
+}
+.bg-lighgray {
+    background-color:#e2faff;
+}
+.text-turq {
+    color:#58e3ff;
+}
+#aboutme{
+    padding-top: 51px;
+    margin: 15px;
+    border-color: #58e3ff;
+    /*padding-bottom: 25px;*/
 }
 
-#aboutme{
-    margin: 15px;
-    border-color: #299e9e;
-}
-#aboutme #propic{
-    width: 170px;
-    height: auto;
-}
-#experience{
-    margin: 15px;
-    border-color: #299e9e;
-}
 #projects{
+    padding-top: 51px;
     margin: 15px;
-    border-color: #299e9e;
+    border-color: #58e3ff;
+}
+#services{
+    padding-top: 51px;
+    margin: 15px;
+    border-color: #58e3ff;
+}
+#prices{
+    margin: 15px;
+    border-color: #58e3ff;
 }
 #contact{
+    padding-top: 51px;
     margin: 15px;
-    border-color: #299e9e;
+    border-color: #58e3ff;
 }
-
+#contactForm{
+    width: 75%;
+    margin-left: 5px;
+}
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     .navbar-nav
