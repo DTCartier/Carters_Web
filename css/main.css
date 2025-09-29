@@ -50,6 +50,7 @@ h3{
 .overlay {
     height: 780px;
     background-attachment: fixed;
+    background-image: url("../images/3.png");
     /*filter: blur(2px);
     -webkit-filter: blur(2px);*/
 }

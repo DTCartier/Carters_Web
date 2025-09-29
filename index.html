@@ -1,285 +1,233 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-xmlns:fb="http://ogp.me/ns/fb#" lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta property="og:image" content="fully_qualified_image_url_here" />
-    <title>Carter Technologies LLC - Web Services</title>
-    <link rel="stylesheet" href="bootstrap-5.2.0-dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/main.css" />
-    <link
-      rel="stylesheet"
-      href="css/fontawesome-free-6.2.0-web/css/fontawesome.min.css"
-    />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  </head>
-  
+<html lang="en">
 
-<script>
-    const apiKey = 'YOUR_THUMBNAIL_WS_API_KEY';
-    const thumbnailContainer = document.querySelector('.thumbnail-container');
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carters Web Services</title>
+  <link rel="stylesheet" href="bootstrap-5.2.0-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/newMain.css" />
+  <link rel="stylesheet" href="css/fontawesome-free-6.2.0-web/css/fontawesome.min.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    $('.list-group-item').hover(function () {
-        const link = $(this).attr('href');
-        const requestUrl = `https://api.thumbnail.ws/api/${apiKey}/thumbnail/get?url=${link}`;
+</head>
 
-        $.ajax({
-            url: requestUrl,
-            type: 'GET',
-            success: function (data) {
-                thumbnailContainer.innerHTML = `<img src="${data}" alt="Website Thumbnail" class="img-thumbnail">`;
-            },
-            error: function () {
-                thumbnailContainer.innerHTML = `<img src="placeholder.png" alt="Website Thumbnail" class="img-thumbnail">`;
-            }
-        });
-    });
-</script>
-
-  <body>
-    <nav class="navbar navbar-expand-sm sticky-top py-0" id="navvy">
+<body>
+  <main>
+    <nav class="navbar navbar-expand ">
       <div class="container-fluid">
-        <a class="navbar-brand text-white" href="#">Carter Technologies LLC</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="btn btn-outline-info">Menu</span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="#aboutme">The Mission</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#projects">Projects</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#services">Services</a>
-            </li>
-            <!---
-            <li class="nav-item">
-              <a class="nav-link" href="#prices">Prices</a>
-            </li>
-            --->
-            <li class="nav-item">
-              <a class="nav-link" href="#contact">Contact</a>
-            </li>
-          </ul>
-        </div>
+        <a class="navbar-brand" data-section="home" href="#" onclick="showSection('home')">HOME</a>
+        <ul class="navbar-nav ms-auto" id="nav-ul">
+          <!--<li class="nav-item">
+            <a class="nav-link" data-section="home" href="#" onclick="showSection('home')">HOME</a>
+          </li>-->
+          <li class="nav-item">
+            <a class="nav-link" data-section="mission" href="#" onclick="showSection('mission')">Mission</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-section="values" href="#" onclick="showSection('values')">Values</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-section="services" href="#" onclick="showSection('services')">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-section="contact" href="#" onclick="showSection('contact')">Contact</a>
+          </li>
+        </ul>
       </div>
     </nav>
-    <div id="home" class="overlay text-center">
+
+    <section id="home" class="section active overlay">
       <div class="container p-4 text-center text-white">
-        <br><br><br><br><br><br><br><br>
-        <h1 class="display-3">Welcome to Carter Technologies</h1>
-        <h1 style="font-weight: normal;"><small>Your solution for innovative web services.</small></h1>
+        <h1 class="display-3">Welcome to Carters Web Services</h1>
+        <p class="lead">Your solution for innovative web services.</p>
       </div>
-        <!---<img src="images/2.png" id="gif" alt="Carter Technologies"  style="max-width: 105%;">--->
-    </div>
-    <br><br>
-    <div class="container flex border border-white rounded bg-lighgray text-black" style="width: 50%;">
-      <div id="aboutme">
-        <h3>The Mission</h3>
-        <p class="text-center">
-          At Carter Technologies, our mission is clear: To be the driving force behind 
-          your digital success.Drawing on our extensive industry experience, we create 
-          innovative,tailor-made web solutions that empower businesses and individuals 
-          alike.
+    </section>
 
-          Integrity, transparency, and a client-centric approach are the cornerstones 
-          of our values. We collaborate closely with our clients to transform their 
-          visions into functional and captivating web experiences, all while 
-          maintaining the highest standards of quality, security, and reliability.
-          Carter Technologies LLC understands the dynamic nature of the digital world. 
-          We are committed to staying at the forefront of industry trends, ensuring 
-          that our solutions stand the test of time. Our unwavering dedication to 
-          excellence and continual learning allows us to adapt and evolve to remain 
-          a leader in web development.
-          
-          In essence, our mission is to enable success through technology. Carter 
-          Technologies is your trusted partner in the digital journey, working 
-          relentlessly to bring your digital aspirations to life and keep you 
-          competitive in the ever-evolving world of web development.
-        </p>
-      </div>
-
-      <div id="projects">
-        <h3>Few Projects I've Worked On</h3>
-        <div class="text-center">
-          <a href="https://soulfirellc.net">Soul Fire LLC</a>
-          <!---</br>
-          <a href="https://dominioncarellc.com">Dominion Care</a>--->
-        </br>
-        <a href="https://davidmatthewsauthorpoetmusician.com/">davidmatthewsauthorpoetmusician</a>
-        </div>
-      </div>
-
-      <div id="services">
-        <h3>Services</h3>
-        <p class="lead card-text text-center">Tiers & Prices</p>
-        <div class="card-group text-white">
-          <div class="card bg-turq">
-            <div class="card-body">
-              <h5 class="card-title text-center">Basic</h5>
-              <ul>
-                <li>1-2 pages</li>
-                <li>2 Free Revisions</li>
-              </ul>
-            </div>
-            <div class="card-footer">
-              <p class="text-center">$150</p>
-            </div>
+    <section id="mission" class="section">
+      <div>
+        <h2 class="section-title">Our Mission</h2>
+        <div class="mission-cards-container">
+          <div class="mission-card">
+            <h4>Innovation</h4>
+            <p>Create cutting-edge web solutions that empower businesses and individuals.</p>
           </div>
-          <div class="card bg-turq">
-            <div class="card-body">
-              <h5 class="card-title text-center">Standard</h5>
-              <ul>
-                <li>3-4 pages</li>
-                <li>3 Free Revisions</li>
-              </ul>
-            </div>
-            <div class="card-footer">
-              <p class="text-center">$200</p>
-            </div>
+          <div class="mission-card">
+            <h4>Collaboration</h4>
+            <p>Work closely with clients to transform visions into captivating web experiences.</p>
           </div>
-          <div class="card bg-turq">
-            <div class="card-body">
-              <h5 class="card-title text-center">Premium</h5>
-              <ul>
-                <li>5 pages</li>
-                <li>5 Free Revisions</li>
-              </ul>
-            </div>
-            <div class="card-footer">
-              <p class="text-center">$300</p>
-            </div>
-          </div>
-          <!---<div class="card bg-turq"></div>
-            <div class="card-body">
-              <h5 class="card-title">Ultimate</h5>
-              <ul>
-                <li>6+ pages</li>
-                <li>10 Free Revisions</li>
-              </ul>
-            </div>
-            <div class="card-footer">
-              <p class="text-center">$500</p>
-            </div>
-          </div> --->
-        </div>
-        <br>
-        <div class="card-group text-white">
-          <div class="card bg-turq">
-            <div class="card-body">
-              <h5 class="card-title text-center">Revisions/Maintenance</h5>
-              <p>Any minor updates such as:</p>
-              <ul>
-                <li>Updating/Adding images, colors, wording, etc.</li>
-              </ul>
-            </div>
-            <div class="card-footer">
-              <p class="text-center">$30 Per Request</p>
-            </div>
+          <div class="mission-card">
+            <h4>Excellence</h4>
+            <p>Maintain highest standards of quality, security, and reliability in all projects.</p>
           </div>
         </div>
-        <br>
-        <div class="card-group text-white">
-          <div class="card bg-turq">
-            <div class="card-body">
-              <h5 class="card-title text-center">Additonal Pages</h5>
-            </div>
-            <div class="card-footer">
-              <p class="text-center">$50 Per Page</p>
-            </div>
+        <!---<p>To be the driving force behind your digital success. We create innovative, tailor-made web solutions that
+          empower businesses and individuals alike. We collaborate closely with our clients to transform visions into
+          captivating web experiences, all while maintaining the highest standards of quality, security, and
+          reliability.</p>--->
+      </div>
+    </section>
+    <!---
+    <section id="projects" class="section">
+      <div>
+        <h2>Projects</h2>
+        <ul>
+          <li><a href="https://soulfirellc.net" target="_blank">Soul Fire LLC</a></li>
+          <li><a href="https://davidmatthewsauthorpoetmusician.com" target="_blank">David Matthews</a></li>
+        </ul>
+      </div>
+    </section>
+    -->
+    <section id="values" class="section">
+      <div class="container text-center text-dark">
+        <h2 class="section-title">Our Values</h2>
+        <div class="values-cards">
+          <div class="value-card">
+            <div class="icon">👤</div>
+            <h4>Integrity</h4>
+            <p>We uphold honesty and ethical practices in all our dealings.</p>
+          </div>
+          <div class="value-card">
+            <div class="icon">🪟</div>
+            <h4>Transparency</h4>
+            <p>We maintain open communication throughout the development process.</p>
+          </div>
+          <div class="value-card">
+            <div class="icon">🏛️</div>
+            <h4>Client-Centric</h4>
+            <p>Your success is our priority in every project we undertake.</p>
           </div>
         </div>
       </div>
+    </section>
+    <section id="services" class="section">
+      <div>
+        <h2 class="section-title">Our Services</h2>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Plan</th>
+              <th>Pages</th>
+              <th>Revisions</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Basic</td>
+              <td>1–2 pages</td>
+              <td>2</td>
+              <td>$150</td>
+            </tr>
+            <tr>
+              <td>Standard</td>
+              <td>3–4 pages</td>
+              <td>3</td>
+              <td>$200</td>
+            </tr>
+            <tr>
+              <td>Premium</td>
+              <td>5 pages</td>
+              <td>5</td>
+              <td>$300</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <div id="contact">
-        <h3>Where to Contact Me</h3>
-        <br>
-        <div class="text-center">
-          <div class="row justify-content-center">
-            <h5>Don't hesitate to reach out</h5>
-            <a href=mailto:“CarterTechnologiesllc@gmail.com”>Click here to contact me through email</a> 
-          <!--
-          <form class="form-control-sm" id="contactForm" action="send_email.php" method="post" onsubmit="return validateForm()" data-animation="pop-in"
-          data-delay=".5s">
-            <div class="mb-3">
-              <input placeholder="Enter Name" type="text" class="form-control bg-dark text-white" id="name" name="name" required>
-            </div>
-            <div class="mb-3">
-              <input placeholder="Enter Email" type="email" class="form-control bg-dark text-white" id="email" name="email" required>
-            </div>
-            <div class="mb-3">
-              <textarea placeholder="Enter Message" class="form-control bg-dark text-white" id="message" name="message" rows="4" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Send Message</button>
-          </form>
-          --->
-          </div>
-          <h5>Or</h5>
-          <h5 class="text-black">(937) 247-4840</h5>
-        </div>
+        <h3 class="mt-5">Hosting Plans</h3>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Plan</th>
+              <th>Features</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Starter</td>
+              <td>1 Website, 10GB SSD, SSL, Email Support</td>
+              <td>$3.99/mo</td>
+            </tr>
+            <tr>
+              <td>Pro</td>
+              <td>5 Websites, 30GB SSD, SSL & Email, Priority Support</td>
+              <td>$6.99/mo</td>
+            </tr>
+            <tr>
+              <td>Unlimited</td>
+              <td>Unlimited Sites, 100GB SSD, Domain/SSL, 24/7 Support</td>
+              <td>$9.99/mo</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Revisions/Maintenance:</strong> $30 per request</p>
+        <p><strong>Additional Pages:</strong> $50 per page</p>
       </div>
-    </div>
-    <footer class="bg-dark text-center text-white">
-      <!-- Grid container 
-      <div class="container p-4 pb-0">
-         Section: Social media 
-        <section class="mb-4">
-          <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
-            ><i class="fa-facebook"></i
-          ></a>
+    </section>
 
-          <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
-            ><i class="fab fa-twitter"></i
-          ></a>
-
-          <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
-            ><i class="fab fa-google"></i
-          ></a>
-
-          <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
-            ><i class="fab fa-instagram"></i
-          ></a>
-
-          <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-
-          <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
-            ><i class="fab fa-github"></i
-          ></a>
-        </section>
-         Section: Social media 
+    <section id="contact" class="section">
+      <div>
+        <h2 class="section-title">Contact Us</h2>
+        <p>Email: <a href="mailto:CarterTechnologiesllc@gmail.com">CarterTechnologiesllc@gmail.com</a></p>
+        <p>Phone: (937) 247-4840</p>
       </div>
-       Grid container -->
+    </section>
+  </main>
 
-      <!-- Copyright -->
-      <div class="text-center p-3" style="background-color: #000000;">
-        © 2024   Copyright: Carter Technologies LLC
-      </div>
-      <!-- Copyright -->
-    </footer> 
-    <script src="bootstrap-5.2.0-dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      function validateForm() {
-        var name = document.getElementById("name").value;
-        var email = document.getElementById("email").value;
-        var message = document.getElementById("message").value;
-    
-        // Basic email validation using a regular expression
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          alert("Please enter a valid email address.");
-          return false;
+  <footer>
+    <p>© 2025 Carter Technologies LLC</p>
+  </footer>
+
+  <script src="bootstrap-5.2.0-dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const navLinks = document.querySelectorAll(".navbar-collapse .nav-link");
+      const navbarCollapse = document.querySelector(".navbar-collapse");
+
+      navLinks.forEach(link => {
+        link.addEventListener("click", () => {
+          if (navbarCollapse.classList.contains("show")) {
+            new bootstrap.Collapse(navbarCollapse, { toggle: true });
+          }
+        });
+      });
+    });
+  </script>
+
+  <script>
+    function showSection(id) {
+        // Hide all sections
+        document.querySelectorAll('.section').forEach(section => {
+          section.classList.remove('active');
+        });
+
+        // Show selected section
+        const el = document.getElementById(id);
+        if (el) {
+          setTimeout(() => {
+            el.classList.add('active');
+          }, 50);
         }
-    
-        // You can add additional validation logic here if needed
-    
-        return true;
+
+        // Remove existing style classes from navbar
+        const nav = document.querySelector('nav.navbar');
+        nav.classList.remove('home-style', 'mission-style', 'values-style', 'services-style', 'contact-style');
+
+        // Add new style class
+        nav.classList.add(`${id}-style`);
       }
-    </script>
-  </body>
+      // Collapse navbar on item click (mobile)
+        /*document.querySelectorAll('.nav-link').forEach(link => {
+          link.addEventListener('click', () => {
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            if (navbarCollapse.classList.contains('show')) {
+              navbarToggler.click();
+            }
+          });
+        });*/
+  </script>
+</body>
 </html>
