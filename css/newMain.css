@@ -39,7 +39,7 @@ nav.navbar {
 /* Default link styles (overridden by section classes you already add) */
 .navbar-brand,
 .nav-link {
-    color: #6a5acd !important;
+    color: #ffffff !important;
     font-weight: 500;
 }
 
@@ -164,7 +164,7 @@ h1 {
     font-size: clamp(2rem, 6vw, 3.5rem);
 }
 
-h2.section-title {
+h1,h2.section-title {
     color: #474793;
     font-size: clamp(1.5rem, 4.5vw, 2.5rem);
     font-weight: 700;
