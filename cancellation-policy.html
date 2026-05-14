@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cancellation Policy — Carter Web Services</title>
+
+  <!-- Bootstrap 5.2 (local) -->
+  <link rel="stylesheet" href="bootstrap-5.2.0-dist/css/bootstrap.min.css" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Brand tokens ── */
+    :root {
+      --brand-dark:   #0D1B2A;
+      --brand-blue:   #1A5C9E;
+      --brand-accent: #2E8BF0;
+      --brand-light:  #EBF3FC;
+      --text-primary: #e8edf5;
+      --text-muted:   #6b7fa3;
+      --border-subtle: rgba(255,255,255,0.06);
+    }
+
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body {
+      background: #080c14;
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.75;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d1422; }
+    ::-webkit-scrollbar-thumb { background: rgba(46,139,240,0.35); border-radius: 3px; }
+
+    h1, h2, h3 { font-family: 'DM Serif Display', serif; }
+
+    /* ── Navbar ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1050;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(8,12,20,0.92);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(59,130,246,0.15);
+    }
+    .nav-inner {
+      max-width: 72rem; margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand-name { font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; color: #fff; letter-spacing: 0.05em; text-decoration: none; }
+    .brand-name span { color: #3b82f6; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+    .nav-link-item {
+      position: relative;
+      font-family: 'DM Sans', sans-serif; font-size: 0.82rem; letter-spacing: 0.04em;
+      color: #6b7fa3; text-decoration: none;
+      transition: color 0.25s ease;
+    }
+    .nav-link-item::after {
+      content: ''; position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1px; background: #3b82f6; transition: width 0.3s ease;
+    }
+    .nav-link-item:hover { color: #93c5fd; }
+    .nav-link-item:hover::after { width: 100%; }
+    .nav-link-item.active { color: #93c5fd; }
+    .btn-nav {
+      display: inline-flex; align-items: center;
+      background: #3b82f6; color: #fff;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600;
+      padding: 10px 24px; border-radius: 6px; text-decoration: none;
+      transition: background 0.25s ease, transform 0.15s ease;
+      box-shadow: 0 0 24px rgba(59,130,246,0.3);
+    }
+    .btn-nav:hover { background: #2563eb; transform: translateY(-1px); color: #fff; }
+    .hamburger { display: none; flex-direction: column; gap: 6px; padding: 8px; cursor: pointer; background: none; border: none; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: #e8edf5; border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease; }
+    #mobile-menu { display: none; background: rgba(8,12,20,0.97); border-top: 1px solid rgba(59,130,246,0.15); padding: 1.5rem; }
+    #mobile-menu.open { display: flex; flex-direction: column; gap: 1.25rem; }
+    #mobile-menu .nav-link-item { font-size: 1rem; }
+
+    @media (max-width: 767px) {
+      .nav-links, .btn-nav-desktop { display: none !important; }
+      .hamburger { display: flex; }
+    }
+
+    /* ── Hero band ── */
+    .hero-band {
+      padding: 7rem 0 3.5rem;
+      background: linear-gradient(160deg, #0a1628 0%, #080c14 60%),
+                  radial-gradient(ellipse 80% 60% at 50% -10%, rgba(46,139,240,0.12) 0%, transparent 70%);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .hero-band .pill {
+      display: inline-block;
+      background: rgba(46,139,240,0.12);
+      border: 1px solid rgba(46,139,240,0.3);
+      color: #93c5fd;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 4px 14px; border-radius: 99px; margin-bottom: 1rem;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .hero-band h1 { font-size: clamp(2rem, 5vw, 3.25rem); color: #fff; margin-bottom: 0.5rem; }
+    .hero-band .effective { font-size: 0.82rem; color: var(--text-muted); font-family: 'DM Sans', sans-serif; }
+
+    /* ── Layout ── */
+    .page-body {
+      max-width: 72rem; margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    @media (max-width: 991px) {
+      .page-body { grid-template-columns: 1fr; }
+      .toc-wrap { display: none; }
+    }
+
+    /* ── TOC Sidebar ── */
+    .toc-wrap { position: sticky; top: 84px; }
+    .toc-box {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px; padding: 1.5rem;
+    }
+    .toc-box h6 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 1rem;
+    }
+    .toc-list { list-style: none; margin: 0; padding: 0; }
+    .toc-list li { margin-bottom: 0.2rem; }
+    .toc-list a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem; color: var(--text-muted); text-decoration: none;
+      display: block; padding: 4px 8px; border-radius: 4px;
+      border-left: 2px solid transparent;
+      transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+      line-height: 1.4;
+    }
+    .toc-list a:hover, .toc-list a.active {
+      color: #93c5fd;
+      border-left-color: #3b82f6;
+      background: rgba(59,130,246,0.05);
+    }
+
+    /* ── Content ── */
+    .content-section { margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border-subtle); }
+    .content-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .section-number {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      color: #3b82f6; margin-bottom: 0.5rem;
+    }
+    .content-section h2 { font-size: 1.5rem; color: #fff; margin-bottom: 1rem; }
+    .content-section h3 { font-size: 1.1rem; color: #e8edf5; margin: 1.5rem 0 0.5rem; }
+    .content-section p { color: var(--text-muted); margin-bottom: 0.75rem; }
+    .content-section ul, .content-section ol { color: var(--text-muted); padding-left: 1.25rem; margin-bottom: 0.75rem; }
+    .content-section li { margin-bottom: 0.35rem; }
+    strong { color: var(--text-primary); }
+
+    /* Intro notice */
+    .notice-box {
+      background: rgba(46,139,240,0.07);
+      border: 1px solid rgba(46,139,240,0.25);
+      border-left: 4px solid #3b82f6;
+      border-radius: 8px; padding: 1.1rem 1.4rem;
+      color: #93c5fd; font-size: 0.875rem; line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+    .notice-box a { color: #93c5fd; }
+
+    /* Info box */
+    .info-box {
+      background: rgba(46,139,240,0.06);
+      border: 1px solid rgba(46,139,240,0.2);
+      border-radius: 8px; padding: 1rem 1.25rem;
+      color: #93c5fd; font-size: 0.875rem; margin-bottom: 1rem;
+    }
+
+    /* Warning (non-refundable) boxes */
+    .warn-box {
+      background: rgba(220,38,38,0.06);
+      border: 1px solid rgba(220,38,38,0.22);
+      border-left: 4px solid #dc2626;
+      border-radius: 8px; padding: 0.9rem 1.25rem;
+      color: #fca5a5; font-size: 0.875rem;
+      margin-bottom: 0.6rem;
+      display: flex; align-items: flex-start; gap: 0.75rem;
+    }
+    .warn-box .warn-icon { color: #ef4444; font-size: 1rem; flex-shrink: 0; margin-top: 0.05rem; }
+
+    /* Refund table */
+    .refund-table {
+      width: 100%; border-collapse: collapse;
+      margin: 1rem 0 1.25rem; font-size: 0.875rem;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .refund-table th {
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #93c5fd; font-weight: 700;
+      padding: 0.7rem 1rem; text-align: left;
+      font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .refund-table td {
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 0.7rem 1rem; color: var(--text-muted);
+      vertical-align: top;
+    }
+    .refund-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .refund-table td:first-child { color: var(--text-primary); font-weight: 500; white-space: nowrap; }
+
+    /* ── Footer ── */
+    .site-footer {
+      background: #080c14;
+      border-top: 1px solid var(--border-subtle);
+      padding: 2.5rem 0;
+    }
+    .footer-inner {
+      max-width: 72rem; margin: 0 auto; padding: 0 1.5rem;
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1.25rem;
+    }
+    .footer-brand { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: #6b7fa3; }
+    .footer-copy { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: #4a5a7a; text-align: center; }
+    .footer-copy .bracket { color: #3b82f6; opacity: 0.4; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a {
+      font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: #6b7fa3;
+      text-decoration: none; position: relative; transition: color 0.25s ease;
+    }
+    .footer-links a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px; background: #3b82f6; transition: width 0.3s ease;
+    }
+    .footer-links a:hover { color: #93c5fd; }
+    .footer-links a:hover::after { width: 100%; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════ NAVBAR ══════════════════════════ -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="brand-name">Carter <span>Web Services</span></a>
+
+      <ul class="nav-links">
+        <li><a href="index.html#mission" class="nav-link-item">Mission</a></li>
+        <li><a href="index.html#values" class="nav-link-item">Values</a></li>
+        <li><a href="index.html#services" class="nav-link-item">Services</a></li>
+        <li><a href="index.html#contact" class="nav-link-item">Contact</a></li>
+        <li><a href="pricing.html" class="nav-link-item">Pricing</a></li>
+      </ul>
+
+      <a href="index.html#contact" class="btn-nav btn-nav-desktop d-none d-md-inline-flex">Get a Quote</a>
+
+      <button class="hamburger" id="menu-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div id="mobile-menu">
+      <a href="index.html#mission" class="nav-link-item">Mission</a>
+      <a href="index.html#values" class="nav-link-item">Values</a>
+      <a href="index.html#services" class="nav-link-item">Services</a>
+      <a href="index.html#contact" class="nav-link-item">Contact</a>
+      <a href="pricing.html" class="nav-link-item">Pricing</a>
+      <a href="index.html#contact" class="btn-nav" style="width:fit-content;">Get a Quote</a>
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════ HERO ══════════════════════════ -->
+  <div class="hero-band">
+    <div style="max-width:72rem;margin:0 auto;padding:0 1.5rem;">
+      <div class="pill">Legal</div>
+      <h1>Cancellation Policy</h1>
+      <p class="effective">Effective Date: March 30, 2026 &nbsp;·&nbsp; Carter Technologies LLC (dba Carter Web Services)</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════ BODY ══════════════════════════ -->
+  <div class="page-body">
+
+    <!-- Sticky TOC -->
+    <aside class="toc-wrap">
+      <div class="toc-box">
+        <h6>On this page</h6>
+        <ul class="toc-list">
+          <li><a href="#s1">1. General Policy</a></li>
+          <li><a href="#s2">2. Project-Based Work</a></li>
+          <li><a href="#s3">3. Hosting Services</a></li>
+          <li><a href="#s4">4. Maintenance Plans &amp; Retainers</a></li>
+          <li><a href="#s5">5. Cancellation by Carter Web Services</a></li>
+          <li><a href="#s6">6. Non-Refundable Items</a></li>
+          <li><a href="#s7">7. Refund Process</a></li>
+          <li><a href="#s8">8. Contact for Cancellations</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main>
+
+      <!-- Intro notice -->
+      <div class="notice-box">
+        <strong>Notice:</strong> This Cancellation Policy is incorporated by reference into the Carter Web Services
+        <a href="terms.html">Terms of Service</a>. All cancellation requests must be submitted in writing to
+        <a href="mailto:CarterTechnologiesLLC@gmail.com">CarterTechnologiesLLC@gmail.com</a>.
+      </div>
+
+      <!-- 1 -->
+      <section class="content-section" id="s1">
+        <p class="section-number">Section 01</p>
+        <h2>General Policy</h2>
+        <p>All cancellation requests must be submitted in writing to <a href="mailto:CarterTechnologiesLLC@gmail.com" style="color:#93c5fd;">CarterTechnologiesLLC@gmail.com</a>. <strong>Verbal cancellations are not accepted and will not be honored</strong> under any circumstances.</p>
+        <p>A cancellation is not effective until Carter Web Services confirms receipt and acknowledgment of the cancellation in writing. The effective date of cancellation is the date of Carter Web Services' written confirmation, not the date the request was submitted.</p>
+        <p>Approved refunds, where applicable, will be processed within <strong>15 business days</strong> of the effective cancellation date.</p>
+      </section>
+
+      <!-- 2 -->
+      <section class="content-section" id="s2">
+        <p class="section-number">Section 02</p>
+        <h2>Project-Based Work</h2>
+        <p>This section applies to one-time or milestone-based engagements, including new website builds, site migrations, and custom development projects.</p>
+
+        <h3>2.1 &nbsp; Before Work Begins</h3>
+        <p>If you cancel after signing a Project Agreement but <strong>before any work has commenced</strong>, you are entitled to a full refund minus a <strong>$150.00 administrative processing fee</strong>.</p>
+
+        <h3>2.2 &nbsp; Refund Schedule by Completion Percentage</h3>
+        <p>Once work has begun, refunds are determined based on the percentage of the project completed at the time of cancellation. The completion percentage is determined in good faith by Carter Web Services based on documented work product, time invested, and milestone status.</p>
+
+        <table class="refund-table">
+          <thead>
+            <tr>
+              <th>% Completion at Cancellation</th>
+              <th>Amount Owed / Refund</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0% – 25%</td>
+              <td>50% deposit is forfeited. No additional amount owed by client beyond the deposit.</td>
+            </tr>
+            <tr>
+              <td>26% – 50%</td>
+              <td>50% deposit is forfeited. Client also owes 50% of the remaining contract value (i.e., 25% of total project fee).</td>
+            </tr>
+            <tr>
+              <td>51% – 75%</td>
+              <td>Full project fee is owed. No refund on any amounts already paid.</td>
+            </tr>
+            <tr>
+              <td>76% – 100%</td>
+              <td>Full project fee is owed. No refund on any amounts already paid.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p><em>Completion percentage is determined in good faith by Carter Web Services based on work product, time logs, and milestone status at the time of the cancellation request.</em></p>
+
+        <h3>2.3 &nbsp; Non-Payment Suspension</h3>
+        <p>Website project invoices that remain unpaid <strong>15 or more days past the due date</strong> will result in suspension of all active work. Work will not resume until all outstanding balances are paid in full. This suspension does not constitute a cancellation and does not extinguish any payment obligations.</p>
+
+        <h3>2.4 &nbsp; Client Feedback Window</h3>
+        <p>Upon delivery of any milestone or final deliverable, the client must provide consolidated feedback within <strong>7 business days</strong>. Failure to provide feedback within this window will result in the deliverable being considered <strong>approved as presented</strong>, and the project will advance to the next stage or be deemed complete.</p>
+
+        <h3>2.5 &nbsp; Project Abandonment</h3>
+        <p>If a client becomes unresponsive — defined as failing to respond to communications, provide required materials, or submit approvals for <strong>5 consecutive business days</strong> — Carter Web Services will issue a written notice of potential abandonment via email. If the client does not respond within 3 business days of that notice, Carter Web Services may declare the project <strong>abandoned</strong>.</p>
+        <p>Upon an abandonment declaration:</p>
+        <ul>
+          <li>All deposits are forfeited without exception.</li>
+          <li>Carter Web Services has no further obligation to complete or deliver the project.</li>
+          <li>Any outstanding invoices for work performed to date remain due and payable.</li>
+        </ul>
+      </section>
+
+      <!-- 3 -->
+      <section class="content-section" id="s3">
+        <p class="section-number">Section 03</p>
+        <h2>Hosting Services</h2>
+
+        <h3>3.1 &nbsp; Cancellation Notice</h3>
+        <p>Cancellation of any hosting plan requires a minimum of <strong>30 days written notice</strong> submitted to <a href="mailto:CarterTechnologiesLLC@gmail.com" style="color:#93c5fd;">CarterTechnologiesLLC@gmail.com</a>. If less than 30 days' notice is provided, the cancellation will take effect at the end of the next full billing cycle rather than the current one.</p>
+
+        <h3>3.2 &nbsp; Refunds</h3>
+        <p>Hosting fees are <strong>non-refundable</strong> for the current billing period, regardless of when during the period cancellation is submitted. Pro-rated refunds are not available for partial months of service.</p>
+        <p>For annual hosting plans: payments are non-refundable after <strong>30 days</strong> from the date of renewal or initial activation.</p>
+
+        <h3>3.3 &nbsp; Non-Payment Suspension</h3>
+        <p>Hosting accounts with invoices unpaid <strong>30 or more days past the due date</strong> may be suspended at Carter Web Services' discretion. Suspension does not constitute cancellation — <strong>hosting fees continue to accrue during suspension</strong>. Reinstatement may require payment of all outstanding balances plus a reinstatement fee.</p>
+
+        <h3>3.4 &nbsp; Data Retention After Cancellation</h3>
+        <p>Following the effective cancellation date, client data (files, databases, email) will be retained for a maximum of <strong>one (1) calendar month</strong>. After that period, all data associated with the account may be <strong>permanently deleted without further notice</strong>. Carter Web Services is not responsible for any data lost as a result of the client's failure to retrieve data within this window.</p>
+
+        <h3>3.5 &nbsp; Domain &amp; DNS Management</h3>
+        <p>Domain names and DNS records are the sole responsibility of the client. Carter Web Services is not responsible for initiating domain transfers. It is the client's responsibility to initiate any domain transfer, update nameservers, or take any necessary DNS actions <strong>prior to the effective cancellation date</strong>. Carter Web Services is not liable for domain expiration, loss of a domain name, or DNS disruptions resulting from a client's failure to act in time.</p>
+      </section>
+
+      <!-- 4 -->
+      <section class="content-section" id="s4">
+        <p class="section-number">Section 04</p>
+        <h2>Maintenance Plans &amp; Monthly Retainers</h2>
+
+        <h3>4.1 &nbsp; Cancellation Notice</h3>
+        <p>Maintenance plans and monthly retainers may be cancelled with a minimum of <strong>7 days written notice</strong> submitted to <a href="mailto:CarterTechnologiesLLC@gmail.com" style="color:#93c5fd;">CarterTechnologiesLLC@gmail.com</a>. Cancellation takes effect at the end of the current paid billing period.</p>
+
+        <h3>4.2 &nbsp; No Mid-Cycle Refunds</h3>
+        <p>No refunds or credits will be issued for any portion of an already-paid billing period, regardless of when during the cycle the cancellation is submitted. Partial month refunds are not available under any circumstances.</p>
+
+        <h3>4.3 &nbsp; In-Progress Work</h3>
+        <p>Any maintenance tasks or deliverables already in progress within the current billing period at the time of cancellation will be completed through the end of that period. Carter Web Services has no obligation to perform any additional work beyond the effective cancellation date without a new, separate written agreement.</p>
+      </section>
+
+      <!-- 5 -->
+      <section class="content-section" id="s5">
+        <p class="section-number">Section 05</p>
+        <h2>Cancellation by Carter Web Services</h2>
+        <p>Carter Web Services reserves the right to cancel or terminate any service agreement at its discretion. Grounds for termination by Carter Web Services include, but are not limited to:</p>
+        <ul>
+          <li>Non-payment or a pattern of repeated late payments</li>
+          <li>Abusive, threatening, or harassing behavior toward Carter Web Services staff or contractors</li>
+          <li>Requests to perform illegal, unethical, or fraudulent work</li>
+          <li>Fraud or material misrepresentation in any aspect of the engagement</li>
+          <li>Material breach of the Carter Web Services Terms of Service</li>
+        </ul>
+        <p><strong>If Carter Web Services terminates an agreement without cause attributable to the client:</strong> the client will receive a pro-rated refund for any undelivered work or services paid for in advance.</p>
+        <p><strong>If Carter Web Services terminates due to a client breach or conduct violation:</strong> no refund will be issued for any amounts paid. All outstanding invoices for work performed remain immediately due and payable.</p>
+      </section>
+
+      <!-- 6 -->
+      <section class="content-section" id="s6">
+        <p class="section-number">Section 06</p>
+        <h2>Non-Refundable Items</h2>
+        <p>The following fees and costs are <strong>non-refundable under all circumstances</strong>:</p>
+
+        <div class="warn-box">
+          <span class="warn-icon">✕</span>
+          <div><strong>Project Deposit (50%)</strong> — Once work has commenced on a project, the initial 50% deposit is non-refundable regardless of the reason for cancellation.</div>
+        </div>
+
+        <div class="warn-box">
+          <span class="warn-icon">✕</span>
+          <div><strong>Third-Party Fees</strong> — Any fees paid to third parties on the client's behalf are non-refundable. This includes domain registrations, premium plugins, themes, stock photography, API subscriptions, or any other external service or asset purchased for the client's project.</div>
+        </div>
+
+        <div class="warn-box">
+          <span class="warn-icon">✕</span>
+          <div><strong>Rush Fees ($200.00)</strong> — Rush or expedited scheduling fees are non-refundable once the scheduling slot has been allocated, regardless of whether work has begun.</div>
+        </div>
+
+        <div class="warn-box">
+          <span class="warn-icon">✕</span>
+          <div><strong>Administrative &amp; Processing Fees</strong> — Any administrative, processing, or platform fees charged by Carter Web Services or its payment processors are non-refundable.</div>
+        </div>
+
+        <div class="warn-box">
+          <span class="warn-icon">✕</span>
+          <div><strong>Abandoned Project Fees</strong> — All fees associated with a project declared abandoned due to client unresponsiveness are non-refundable. See Section 2.5 for abandonment criteria.</div>
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="content-section" id="s7">
+        <p class="section-number">Section 07</p>
+        <h2>Refund Process</h2>
+        <p>Where a refund is approved under this policy, it will be issued via the <strong>original payment method</strong> used for the transaction:</p>
+        <ul>
+          <li>Credit card or debit card</li>
+          <li>PayPal</li>
+          <li>ACH bank transfer</li>
+        </ul>
+        <p>Refunds will be processed within <strong>15 business days</strong> of the effective cancellation date and written refund confirmation from Carter Web Services. Carter Web Services is not responsible for any delays in the posting or processing of refunds caused by banks, card networks, or payment processors, which may add additional processing time beyond Carter Web Services' control.</p>
+      </section>
+
+      <!-- 8 -->
+      <section class="content-section" id="s8">
+        <p class="section-number">Section 08</p>
+        <h2>Contact for Cancellations</h2>
+        <p>All cancellation requests must be submitted in writing. Verbal cancellations will not be processed.</p>
+        <div class="info-box">
+          <strong>Carter Technologies LLC</strong> — Carter Web Services<br />
+          Email: <a href="mailto:CarterTechnologiesLLC@gmail.com" style="color:#93c5fd;">CarterTechnologiesLLC@gmail.com</a><br />
+          Mailing Address: [INSERT ADDRESS], Ohio<br />
+          Business Hours: [INSERT HOURS]
+        </div>
+        <p>We commit to acknowledging all cancellation requests within <strong>2 business days</strong> of receipt. Please retain a copy of your cancellation request and our written confirmation for your records.</p>
+      </section>
+
+    </main>
+  </div><!-- /.page-body -->
+
+
+  <!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-brand">Carter Web Services</span>
+      <p class="footer-copy mb-0">
+        <span class="bracket">&lt;</span> © <span id="year"></span> Carter Technologies LLC <span class="bracket">/&gt;</span>
+      </p>
+      <nav class="footer-links">
+        <a href="index.html#mission">Mission</a>
+        <a href="index.html#services">Services</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="terms.html">Terms</a>
+        <a href="cancellation-policy.html" style="color:#93c5fd;">Cancellation Policy</a>
+      </nav>
+    </div>
+  </footer>
+
+
+  <script src="bootstrap-5.2.0-dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Navbar scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // Mobile menu
+    const toggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const lines = toggle.querySelectorAll('span');
+    toggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      lines[0].style.transform = open ? 'translateY(8px) rotate(45deg)' : '';
+      lines[1].style.opacity   = open ? '0' : '';
+      lines[2].style.transform = open ? 'translateY(-8px) rotate(-45deg)' : '';
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      lines[0].style.transform = ''; lines[1].style.opacity = ''; lines[2].style.transform = '';
+    }));
+
+    // TOC active highlight on scroll
+    const tocLinks = document.querySelectorAll('.toc-list a');
+    const sections = document.querySelectorAll('.content-section[id]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tocLinks.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>

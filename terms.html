@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service — Carter Web Services</title>
+
+  <!-- Bootstrap 5.2 (local) -->
+  <link rel="stylesheet" href="bootstrap-5.2.0-dist/css/bootstrap.min.css" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Brand tokens ── */
+    :root {
+      --brand-dark:   #0D1B2A;
+      --brand-blue:   #1A5C9E;
+      --brand-accent: #2E8BF0;
+      --brand-light:  #EBF3FC;
+      --text-primary: #e8edf5;
+      --text-muted:   #6b7fa3;
+      --border-subtle: rgba(255,255,255,0.06);
+    }
+
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body {
+      background: #080c14;
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.75;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d1422; }
+    ::-webkit-scrollbar-thumb { background: rgba(46,139,240,0.35); border-radius: 3px; }
+
+    h1, h2, h3 { font-family: 'DM Serif Display', serif; }
+
+    /* ── Navbar (matches index.html exactly) ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1050;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(8,12,20,0.92);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(59,130,246,0.15);
+    }
+    .nav-inner {
+      max-width: 72rem; margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand-name { font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; color: #fff; letter-spacing: 0.05em; text-decoration: none; }
+    .brand-name span { color: #3b82f6; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+    .nav-link-item {
+      position: relative;
+      font-family: 'DM Sans', sans-serif; font-size: 0.82rem; letter-spacing: 0.04em;
+      color: #6b7fa3; text-decoration: none;
+      transition: color 0.25s ease;
+    }
+    .nav-link-item::after {
+      content: ''; position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1px; background: #3b82f6; transition: width 0.3s ease;
+    }
+    .nav-link-item:hover { color: #93c5fd; }
+    .nav-link-item:hover::after { width: 100%; }
+    .nav-link-item.active { color: #93c5fd; }
+    .btn-nav {
+      display: inline-flex; align-items: center;
+      background: #3b82f6; color: #fff;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600;
+      padding: 10px 24px; border-radius: 6px; text-decoration: none;
+      transition: background 0.25s ease, transform 0.15s ease;
+      box-shadow: 0 0 24px rgba(59,130,246,0.3);
+    }
+    .btn-nav:hover { background: #2563eb; transform: translateY(-1px); color: #fff; }
+    .hamburger { display: none; flex-direction: column; gap: 6px; padding: 8px; cursor: pointer; background: none; border: none; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: #e8edf5; border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease; }
+    #mobile-menu { display: none; background: rgba(8,12,20,0.97); border-top: 1px solid rgba(59,130,246,0.15); padding: 1.5rem; }
+    #mobile-menu.open { display: flex; flex-direction: column; gap: 1.25rem; }
+    #mobile-menu .nav-link-item { font-size: 1rem; }
+
+    @media (max-width: 767px) {
+      .nav-links, .btn-nav { display: none !important; }
+      .hamburger { display: flex; }
+    }
+
+    /* ── Hero band ── */
+    .hero-band {
+      padding: 7rem 0 3.5rem;
+      background: linear-gradient(160deg, #0a1628 0%, #080c14 60%),
+                  radial-gradient(ellipse 80% 60% at 50% -10%, rgba(46,139,240,0.12) 0%, transparent 70%);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .hero-band .pill {
+      display: inline-block;
+      background: rgba(46,139,240,0.12);
+      border: 1px solid rgba(46,139,240,0.3);
+      color: #93c5fd;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 4px 14px; border-radius: 99px; margin-bottom: 1rem;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .hero-band h1 { font-size: clamp(2rem, 5vw, 3.25rem); color: #fff; margin-bottom: 0.5rem; }
+    .hero-band .effective { font-size: 0.82rem; color: var(--text-muted); font-family: 'DM Sans', sans-serif; }
+
+    /* ── Layout ── */
+    .page-body {
+      max-width: 72rem; margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    @media (max-width: 991px) {
+      .page-body { grid-template-columns: 1fr; }
+      .toc-wrap { display: none; }
+    }
+
+    /* ── TOC Sidebar ── */
+    .toc-wrap {
+      position: sticky;
+      top: 84px;
+    }
+    .toc-box {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+    .toc-box h6 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 1rem;
+    }
+    .toc-list { list-style: none; margin: 0; padding: 0; }
+    .toc-list li { margin-bottom: 0.2rem; }
+    .toc-list a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem; color: var(--text-muted); text-decoration: none;
+      display: block; padding: 4px 8px; border-radius: 4px;
+      border-left: 2px solid transparent;
+      transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+      line-height: 1.4;
+    }
+    .toc-list a:hover,
+    .toc-list a.active {
+      color: #93c5fd;
+      border-left-color: #3b82f6;
+      background: rgba(59,130,246,0.05);
+    }
+
+    /* ── Content ── */
+    .content-section { margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border-subtle); }
+    .content-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .section-number {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      color: #3b82f6; margin-bottom: 0.5rem;
+    }
+    .content-section h2 {
+      font-size: 1.5rem; color: #fff; margin-bottom: 1rem;
+    }
+    .content-section h3 {
+      font-size: 1.1rem; color: #e8edf5; margin: 1.5rem 0 0.5rem;
+    }
+    .content-section p { color: var(--text-muted); margin-bottom: 0.75rem; }
+    .content-section ul, .content-section ol {
+      color: var(--text-muted); padding-left: 1.25rem; margin-bottom: 0.75rem;
+    }
+    .content-section li { margin-bottom: 0.35rem; }
+    strong { color: var(--text-primary); }
+
+    /* All-caps legal blocks */
+    .legal-caps {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px; padding: 1.25rem 1.5rem;
+      font-size: 0.82rem; line-height: 1.7;
+      color: #8a9ab8; font-family: 'DM Sans', sans-serif;
+      text-transform: uppercase; letter-spacing: 0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Info box */
+    .info-box {
+      background: rgba(46,139,240,0.06);
+      border: 1px solid rgba(46,139,240,0.2);
+      border-radius: 8px; padding: 1rem 1.25rem;
+      color: #93c5fd; font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Footer (matches index.html exactly) ── */
+    .site-footer {
+      background: #080c14;
+      border-top: 1px solid var(--border-subtle);
+      padding: 2.5rem 0;
+    }
+    .footer-inner {
+      max-width: 72rem; margin: 0 auto; padding: 0 1.5rem;
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 1.25rem;
+    }
+    .footer-brand { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: #6b7fa3; }
+    .footer-copy { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: #4a5a7a; text-align: center; }
+    .footer-copy .bracket { color: #3b82f6; opacity: 0.4; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a {
+      font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: #6b7fa3;
+      text-decoration: none; position: relative;
+      transition: color 0.25s ease;
+    }
+    .footer-links a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px; background: #3b82f6; transition: width 0.3s ease;
+    }
+    .footer-links a:hover { color: #93c5fd; }
+    .footer-links a:hover::after { width: 100%; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════ NAVBAR ══════════════════════════ -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="brand-name">Carter <span>Web Services</span></a>
+
+      <ul class="nav-links">
+        <li><a href="index.html#mission" class="nav-link-item">Mission</a></li>
+        <li><a href="index.html#values" class="nav-link-item">Values</a></li>
+        <li><a href="index.html#services" class="nav-link-item">Services</a></li>
+        <li><a href="index.html#contact" class="nav-link-item">Contact</a></li>
+        <li><a href="pricing.html" class="nav-link-item">Pricing</a></li>
+      </ul>
+
+      <a href="index.html#contact" class="btn-nav d-none d-md-inline-flex">Get a Quote</a>
+
+      <button class="hamburger" id="menu-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div id="mobile-menu">
+      <a href="index.html#mission" class="nav-link-item">Mission</a>
+      <a href="index.html#values" class="nav-link-item">Values</a>
+      <a href="index.html#services" class="nav-link-item">Services</a>
+      <a href="index.html#contact" class="nav-link-item">Contact</a>
+      <a href="pricing.html" class="nav-link-item">Pricing</a>
+      <a href="index.html#contact" class="btn-nav" style="width:fit-content;">Get a Quote</a>
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════ HERO ══════════════════════════ -->
+  <div class="hero-band">
+    <div style="max-width:72rem;margin:0 auto;padding:0 1.5rem;">
+      <div class="pill">Legal</div>
+      <h1>Terms of Service</h1>
+      <p class="effective">Effective Date: March 30, 2026 &nbsp;·&nbsp; Carter Technologies LLC (dba Carter Web Services)</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════ BODY ══════════════════════════ -->
+  <div class="page-body">
+
+    <!-- Sticky TOC -->
+    <aside class="toc-wrap">
+      <div class="toc-box">
+        <h6>On this page</h6>
+        <ul class="toc-list">
+          <li><a href="#s1">1. Acceptance of Terms</a></li>
+          <li><a href="#s2">2. Services Offered</a></li>
+          <li><a href="#s3">3. Scope of Work &amp; Change Orders</a></li>
+          <li><a href="#s4">4. Revisions</a></li>
+          <li><a href="#s5">5. Payment Terms</a></li>
+          <li><a href="#s6">6. Client Responsibilities</a></li>
+          <li><a href="#s7">7. Intellectual Property &amp; Ownership</a></li>
+          <li><a href="#s8">8. Hosting Services</a></li>
+          <li><a href="#s9">9. Warranties &amp; Disclaimers</a></li>
+          <li><a href="#s10">10. No Guarantee of Results</a></li>
+          <li><a href="#s11">11. Limitation of Liability</a></li>
+          <li><a href="#s12">12. Indemnification</a></li>
+          <li><a href="#s13">13. Confidentiality</a></li>
+          <li><a href="#s14">14. Governing Law &amp; Disputes</a></li>
+          <li><a href="#s15">15. Termination</a></li>
+          <li><a href="#s16">16. Force Majeure</a></li>
+          <li><a href="#s17">17. Contact</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main>
+
+      <!-- 1 -->
+      <section class="content-section" id="s1">
+        <p class="section-number">Section 01</p>
+        <h2>Acceptance of Terms</h2>
+        <p>These Terms of Service ("Terms") constitute a legally binding agreement between you ("Client") and <strong>Carter Technologies LLC</strong>, an Ohio limited liability company doing business as <strong>Carter Web Services</strong> ("Carter Web Services," "we," "us," or "our").</p>
+        <p>By engaging Carter Web Services for any service — whether by signing a Project Agreement, submitting a deposit, or using any deliverable we provide — you acknowledge that you have read, understood, and agree to be bound by these Terms in their entirety.</p>
+        <p>We reserve the right to update or modify these Terms at any time. We will endeavor to provide notice of material changes, but it is your responsibility to review these Terms periodically. <strong>Continued use of our services following any update constitutes acceptance of the revised Terms.</strong></p>
+      </section>
+
+      <!-- 2 -->
+      <section class="content-section" id="s2">
+        <p class="section-number">Section 02</p>
+        <h2>Services Offered</h2>
+        <p>Carter Web Services provides the following categories of services:</p>
+        <ul>
+          <li>Website design and development (new builds)</li>
+          <li>Website migrations (platform or host transfers)</li>
+          <li>Monthly maintenance plans</li>
+          <li>Reseller web hosting (billed monthly or annually)</li>
+        </ul>
+        <p>The specific scope of any engagement is defined in a separate <strong>Project Agreement</strong> (or "Statement of Work") entered into between the parties. In the event of any conflict between these Terms and a Project Agreement, the Project Agreement controls for matters expressly addressed therein; these Terms control for all other matters.</p>
+      </section>
+
+      <!-- 3 -->
+      <section class="content-section" id="s3">
+        <p class="section-number">Section 03</p>
+        <h2>Scope of Work &amp; Change Orders</h2>
+        <p>All work performed by Carter Web Services will be in accordance with the scope described in the applicable Project Agreement. Any request to add, remove, or modify features, pages, or functionality beyond the agreed scope constitutes a change to the original agreement.</p>
+        <p>Changes must be submitted as a written <strong>Change Request</strong>. Work on any change will not begin until a signed <strong>Change Order</strong> — including any adjustment to timeline and fees — has been executed by both parties. <strong>Verbal approvals or informal agreements are not binding and will not be honored.</strong></p>
+      </section>
+
+      <!-- 4 -->
+      <section class="content-section" id="s4">
+        <p class="section-number">Section 04</p>
+        <h2>Revisions</h2>
+        <p>Standard build packages include <strong>3 rounds of revisions</strong>. A revision round is defined as a single, consolidated set of feedback submitted by the Client at one time. Each round of consolidated feedback counts as one revision round regardless of the number of individual items within that submission.</p>
+        <p>Additional revision rounds beyond those included in your package will be billed at an hourly rate as specified in your Project Agreement or current rate sheet.</p>
+        <p>Revisions requested after a project has been formally launched or delivered are considered new work and will be scoped and billed accordingly.</p>
+      </section>
+
+      <!-- 5 -->
+      <section class="content-section" id="s5">
+        <p class="section-number">Section 05</p>
+        <h2>Payment Terms</h2>
+
+        <h3>5.1 &nbsp; Deposits</h3>
+        <p>A <strong>non-refundable deposit of 50% of the total project fee</strong> is required before any work begins. This deposit secures your place in our production schedule and compensates Carter Web Services for initial planning, research, and scoping activities. The deposit is non-refundable under all circumstances once work has commenced.</p>
+
+        <h3>5.2 &nbsp; Milestone Payments</h3>
+        <p>The remaining balance is due at agreed milestones as defined in your Project Agreement. <strong>No deliverables, files, credentials, or access will be released until full payment has been received and cleared.</strong></p>
+
+        <h3>5.3 &nbsp; Accepted Payment Methods</h3>
+        <p>We accept the following payment methods:</p>
+        <ul>
+          <li>Credit card or debit card</li>
+          <li>PayPal</li>
+          <li>ACH bank transfer</li>
+        </ul>
+
+        <h3>5.4 &nbsp; Late Payments — Website Projects</h3>
+        <p>Invoices for website projects that remain unpaid <strong>15 or more days past the due date</strong> will result in the immediate suspension of all active work. All deliverables, files, and project assets will be withheld until the outstanding balance is paid in full. Carter Web Services is not responsible for any project delays or deadline misses caused by non-payment.</p>
+
+        <h3>5.5 &nbsp; Late Payments — Hosting</h3>
+        <p>Hosting invoices that remain unpaid <strong>30 or more days past the due date</strong> may result in account suspension, including suspension of associated websites and services. Carter Web Services is not liable for any downtime, data loss, or business impact resulting from account suspension due to non-payment.</p>
+
+        <h3>5.6 &nbsp; Rush Fees</h3>
+        <p>Expedited or rush scheduling is available for a flat fee of <strong>$200.00</strong>, subject to current availability. Rush work must be confirmed in writing before commencement. Rush fees are non-refundable once work has begun.</p>
+
+        <h3>5.7 &nbsp; Chargebacks</h3>
+        <p>If you have a dispute regarding a charge, you must contact us at <a href="mailto:CarterTechnologiesLLC@gmail.com" style="color:#93c5fd;">CarterTechnologiesLLC@gmail.com</a> prior to filing any dispute with your payment provider. We commit to responding promptly to resolve legitimate billing concerns.</p>
+        <p>Initiating a chargeback or payment dispute without first contacting Carter Web Services, or initiating an unjustified chargeback, will be treated as a material breach of these Terms and will result in <strong>immediate termination of all services</strong>. Carter Web Services reserves the right to pursue recovery of all fees, costs, and associated expenses.</p>
+      </section>
+
+      <!-- 6 -->
+      <section class="content-section" id="s6">
+        <p class="section-number">Section 06</p>
+        <h2>Client Responsibilities</h2>
+        <p>You agree to fulfill the following responsibilities throughout the engagement:</p>
+        <ul>
+          <li><strong>Timely provision of materials:</strong> Provide all required content, images, copy, brand assets, and credentials when requested by Carter Web Services.</li>
+          <li><strong>Consolidated feedback:</strong> Review all deliverables and submit your feedback as a single, consolidated response within <strong>7 business days</strong> of delivery. Failure to respond within this window may be deemed approval of the deliverable as presented.</li>
+          <li><strong>Ownership of content:</strong> You warrant and represent that you hold all necessary ownership rights, licenses, or permissions to any content, images, trademarks, or materials you supply. You are solely responsible for ensuring your content does not infringe any third-party rights.</li>
+          <li><strong>Accurate contact information:</strong> Maintain accurate and current contact and billing information on file with Carter Web Services.</li>
+        </ul>
+        <p>Client delays — including late provision of materials, extended approval windows, or repeated unavailability — may result in revised project timelines and, in some cases, additional fees. <strong>Carter Web Services is not liable for missed deadlines or delayed launches caused by client-side delays.</strong></p>
+      </section>
+
+      <!-- 7 -->
+      <section class="content-section" id="s7">
+        <p class="section-number">Section 07</p>
+        <h2>Intellectual Property &amp; Ownership</h2>
+
+        <h3>7.1 &nbsp; Pre-Existing Intellectual Property</h3>
+        <p>Carter Web Services retains all rights to any pre-existing tools, code libraries, frameworks, templates, processes, and methodologies used in the delivery of services. You are granted a <strong>non-exclusive, non-transferable license</strong> to use such pre-existing IP solely as incorporated into your specific deliverable.</p>
+
+        <h3>7.2 &nbsp; Project Deliverables</h3>
+        <p>Full ownership rights to all custom work created specifically for your project transfer to you upon <strong>receipt of full and final payment</strong> of all amounts owed under the applicable Project Agreement.</p>
+
+        <h3>7.3 &nbsp; Ownership Before Full Payment</h3>
+        <p><strong>All work product, designs, code, and deliverables remain the sole property of Carter Web Services until full payment is received.</strong> You may not use, publish, deploy, distribute, share, or otherwise exploit any deliverable in any form until all outstanding amounts have been paid in full and confirmed.</p>
+
+        <h3>7.4 &nbsp; Client-Supplied Content</h3>
+        <p>You represent and warrant that you have the legal right to use all content, images, trademarks, and other materials you provide to Carter Web Services. You agree to <strong>indemnify and hold harmless</strong> Carter Web Services from any claims, damages, or costs arising from content you supply, including claims of copyright infringement, defamation, or trademark violation.</p>
+
+        <h3>7.5 &nbsp; Portfolio Rights</h3>
+        <p>Carter Web Services reserves the right to display completed work — including screenshots, descriptions, and links — in our portfolio, website, social media, and other marketing materials. If you require confidentiality regarding the existence or specifics of our engagement, you must submit a written request for confidentiality prior to project completion.</p>
+      </section>
+
+      <!-- 8 -->
+      <section class="content-section" id="s8">
+        <p class="section-number">Section 08</p>
+        <h2>Hosting Services</h2>
+
+        <h3>8.1 &nbsp; Service Provision</h3>
+        <p>Web hosting services offered by Carter Web Services are provided through a third-party reseller arrangement (currently NameHero). Carter Web Services is not responsible for hardware failures, upstream network outages, or infrastructure issues occurring within the third-party provider's systems.</p>
+
+        <h3>8.2 &nbsp; Billing Cycles</h3>
+        <p>Hosting is available on monthly or annual billing cycles. Annual plans are billed in full in advance. Annual plans are non-refundable after 30 days from the billing date.</p>
+
+        <h3>8.3 &nbsp; Uptime</h3>
+        <p>Carter Web Services does not guarantee 100% uptime. We will use commercially reasonable efforts to minimize downtime and maintain service availability, but we are not liable for outages caused by third-party infrastructure, scheduled maintenance, or events beyond our control.</p>
+
+        <h3>8.4 &nbsp; Acceptable Use</h3>
+        <p>You agree not to use hosting services for any of the following prohibited activities:</p>
+        <ul>
+          <li>Distribution of malware, ransomware, spyware, or other malicious code</li>
+          <li>Sending unsolicited bulk email (spam)</li>
+          <li>Hosting illegal content of any kind</li>
+          <li>Phishing schemes or fraudulent websites</li>
+          <li>Copyright or trademark infringement</li>
+          <li>Launching or facilitating DDoS or other cyberattacks</li>
+        </ul>
+        <p>Violation of any acceptable use policy will result in <strong>immediate account suspension with no refund</strong>. Carter Web Services reserves the right to report violations to applicable authorities.</p>
+
+        <h3>8.5 &nbsp; Backups</h3>
+        <p><strong>The Client is solely responsible for maintaining their own backups of all data, files, and databases hosted under their account.</strong> Carter Web Services is not liable for any data loss, corruption, or unavailability, regardless of cause. We strongly recommend maintaining independent backup copies at all times.</p>
+      </section>
+
+      <!-- 9 -->
+      <section class="content-section" id="s9">
+        <p class="section-number">Section 09</p>
+        <h2>Warranties &amp; Disclaimers</h2>
+        <div class="legal-caps">
+          ALL SERVICES PROVIDED BY CARTER WEB SERVICES ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, CARTER TECHNOLOGIES LLC EXPRESSLY DISCLAIMS ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. CARTER WEB SERVICES DOES NOT WARRANT THAT SERVICES WILL BE UNINTERRUPTED, ERROR-FREE, OR SECURE, NOR DOES IT WARRANT THE CONTINUED AVAILABILITY, FUNCTIONALITY, OR COMPATIBILITY OF ANY THIRD-PARTY PLUGIN, API, PLATFORM, OR INTEGRATION.
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="content-section" id="s10">
+        <p class="section-number">Section 10</p>
+        <h2>No Guarantee of Results</h2>
+        <p>Carter Web Services makes no representations, warranties, or guarantees regarding the performance or business outcomes of any website or digital product we create. Specifically, we make no warranties regarding:</p>
+        <ul>
+          <li>Search engine rankings or SEO performance</li>
+          <li>Website traffic volume or visitor engagement metrics</li>
+          <li>Revenue, conversions, or business growth outcomes</li>
+          <li>The accuracy or effectiveness of any marketing strategy</li>
+        </ul>
+        <p>Digital performance is influenced by a wide range of factors outside Carter Web Services' control, including but not limited to search engine algorithm changes, market conditions, competitor activity, and client-side operational decisions.</p>
+      </section>
+
+      <!-- 11 -->
+      <section class="content-section" id="s11">
+        <p class="section-number">Section 11</p>
+        <h2>Limitation of Liability</h2>
+        <div class="legal-caps">
+          TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE TOTAL CUMULATIVE LIABILITY OF CARTER TECHNOLOGIES LLC, ITS MEMBERS, OFFICERS, AGENTS, AND CONTRACTORS ARISING OUT OF OR RELATED TO THESE TERMS OR ANY SERVICES PROVIDED HEREUNDER SHALL NOT EXCEED THE TOTAL FEES PAID BY THE CLIENT TO CARTER WEB SERVICES IN THE THREE (3) MONTH PERIOD IMMEDIATELY PRECEDING THE EVENT GIVING RISE TO THE CLAIM. CARTER WEB SERVICES SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOST PROFITS, LOSS OF DATA, LOSS OF GOODWILL, BUSINESS INTERRUPTION, OR LOSS OF BUSINESS OPPORTUNITY, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="content-section" id="s12">
+        <p class="section-number">Section 12</p>
+        <h2>Indemnification</h2>
+        <p>You agree to <strong>defend, indemnify, and hold harmless</strong> Carter Technologies LLC, its members, officers, employees, agents, and contractors from and against any and all claims, liabilities, damages, losses, costs, and expenses (including reasonable attorneys' fees) arising out of or in connection with:</p>
+        <ul>
+          <li>Your use of our services or any deliverable</li>
+          <li>Any content, materials, or information you supply</li>
+          <li>Your breach of any provision of these Terms</li>
+          <li>Your violation of any applicable law, regulation, or third-party right</li>
+        </ul>
+      </section>
+
+      <!-- 13 -->
+      <section class="content-section" id="s13">
+        <p class="section-number">Section 13</p>
+        <h2>Confidentiality</h2>
+        <p>Both parties agree to hold in strict confidence any non-public information disclosed by the other party during the course of the engagement ("Confidential Information"). Each party agrees not to disclose, reproduce, or use the other party's Confidential Information for any purpose other than fulfilling obligations under these Terms.</p>
+        <p>This confidentiality obligation survives the termination or expiration of these Terms for a period of <strong>two (2) years</strong>.</p>
+        <p>This obligation does not apply to information that: (a) is or becomes publicly available through no breach by the receiving party; (b) was rightfully known by the receiving party prior to disclosure; or (c) must be disclosed pursuant to applicable law, regulation, or valid court order, provided the disclosing party is given reasonable prior notice where legally permissible.</p>
+      </section>
+
+      <!-- 14 -->
+      <section class="content-section" id="s14">
+        <p class="section-number">Section 14</p>
+        <h2>Governing Law &amp; Dispute Resolution</h2>
+        <p>These Terms and any dispute arising hereunder shall be governed by and construed in accordance with the laws of the <strong>State of Ohio</strong>, without regard to its conflict of law principles.</p>
+        <p>In the event of a dispute, the parties agree to first attempt resolution through <strong>non-binding mediation</strong> conducted in Montgomery County, Ohio. Either party may initiate mediation by providing written notice to the other party.</p>
+        <p>If mediation fails to resolve the dispute within 45 days of initiation, either party may pursue available legal remedies. <strong>The prevailing party in any legal proceeding shall be entitled to recover reasonable attorneys' fees and court costs</strong> from the non-prevailing party.</p>
+      </section>
+
+      <!-- 15 -->
+      <section class="content-section" id="s15">
+        <p class="section-number">Section 15</p>
+        <h2>Termination</h2>
+        <p>Either party may terminate an engagement by providing written notice to the other party. Upon termination:</p>
+        <ul>
+          <li>The Client remains responsible for all fees for work performed up to the effective date of termination, including any non-refundable deposits.</li>
+          <li>Carter Web Services will provide any completed or in-progress deliverables only upon full payment of all outstanding amounts.</li>
+        </ul>
+        <p>Carter Web Services reserves the right to terminate any engagement <strong>immediately and without notice</strong> in the event of:</p>
+        <ul>
+          <li>Non-payment of any invoice or milestone</li>
+          <li>Abusive, harassing, or threatening behavior toward Carter Web Services staff or contractors</li>
+          <li>Requests to perform illegal, unethical, or fraudulent work</li>
+          <li>Material breach of any provision of these Terms</li>
+        </ul>
+        <p>In the event of termination for cause by Carter Web Services, no refund will be issued for any amounts paid.</p>
+      </section>
+
+      <!-- 16 -->
+      <section class="content-section" id="s16">
+        <p class="section-number">Section 16</p>
+        <h2>Force Majeure</h2>
+        <p>Carter Web Services shall not be held liable or in breach of any obligation under these Terms for any delay or failure in performance resulting from circumstances beyond our reasonable control, including but not limited to acts of God, natural disasters, pandemics or public health emergencies, government actions or restrictions, cyberattacks on third-party infrastructure, internet service disruptions, or other third-party service outages.</p>
+        <p>In such events, we will make commercially reasonable efforts to resume services as promptly as possible and will communicate proactively with affected clients.</p>
+      </section>
+
+      <!-- 17 -->
+      <section class="content-section" id="s17">
+        <p class="section-number">Section 17</p>
+        <h2>Contact</h2>
+        <p>If you have any questions about these Terms of Service, please contact us:</p>
+        <div class="info-box">
+          <strong>Carter Technologies LLC</strong> (dba Carter Web Services)<br />
+          Email: <a href="mailto:CarterTechnologiesLLC@gmail.com" style="color:#93c5fd;">CarterTechnologiesLLC@gmail.com</a><br />
+          State of incorporation: Ohio, United States
+        </div>
+        <p>We endeavor to respond to all inquiries within 3 business days.</p>
+      </section>
+
+    </main>
+  </div><!-- /.page-body -->
+
+
+  <!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-brand">Carter Web Services</span>
+      <p class="footer-copy mb-0">
+        <span class="bracket">&lt;</span> © <span id="year"></span> Carter Technologies LLC <span class="bracket">/&gt;</span>
+      </p>
+      <nav class="footer-links">
+        <a href="index.html#mission">Mission</a>
+        <a href="index.html#services">Services</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="terms.html" style="color:#93c5fd;">Terms</a>
+        <a href="cancellation-policy.html">Cancellation Policy</a>
+      </nav>
+    </div>
+  </footer>
+
+
+  <script src="bootstrap-5.2.0-dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Navbar scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // Mobile menu
+    const toggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const lines = toggle.querySelectorAll('span');
+    toggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      lines[0].style.transform = open ? 'translateY(8px) rotate(45deg)' : '';
+      lines[1].style.opacity   = open ? '0' : '';
+      lines[2].style.transform = open ? 'translateY(-8px) rotate(-45deg)' : '';
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      lines[0].style.transform = ''; lines[1].style.opacity = ''; lines[2].style.transform = '';
+    }));
+
+    // TOC active highlight on scroll
+    const tocLinks = document.querySelectorAll('.toc-list a');
+    const sections = document.querySelectorAll('.content-section[id]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tocLinks.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>

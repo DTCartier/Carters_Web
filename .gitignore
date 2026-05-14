@@ -1,0 +1,14 @@
+# Environment / secrets
+.env
+
+# Composer dependencies (regenerate with: composer install)
+php/vendor/
+
+# Dev-only output
+temporary screenshots/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/

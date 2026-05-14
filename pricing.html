@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing — Carter Web Services</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            blue: { DEFAULT: '#3b82f6', muted: '#93c5fd', glow: '#3b82f633' },
+            dark: { DEFAULT: '#080c14', 800: '#0d1422', 700: '#0f1829', 600: '#121f34', 500: '#162438' },
+            gray: { DEFAULT: '#6b7fa3', light: '#e8edf5', muted: '#4a5a7a' },
+          },
+          fontFamily: {
+            display: ['Syne', 'sans-serif'],
+            sans:    ['Figtree', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: #080c14; color: #e8edf5; font-family: 'Figtree', sans-serif; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d1422; }
+    ::-webkit-scrollbar-thumb { background: #3b82f644; border-radius: 3px; }
+
+    h1, h2, h3, h4 { font-family: 'Syne', sans-serif; }
+
+    /* Navbar */
+    #navbar { transition: background 0.3s ease, box-shadow 0.3s ease; }
+    #navbar.scrolled { background: rgba(8,12,20,0.92); backdrop-filter: blur(12px); box-shadow: 0 1px 0 rgba(59,130,246,0.15); }
+
+    /* Nav links */
+    .nav-link { position: relative; font-family: 'Figtree', sans-serif; font-size: 0.82rem; letter-spacing: 0.04em; color: #6b7fa3; transition: color 0.25s ease; }
+    .nav-link::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: #3b82f6; transition: width 0.3s ease; }
+    .nav-link:hover { color: #93c5fd; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #3b82f6; color: #ffffff;
+      font-family: 'Figtree', sans-serif; font-size: 0.875rem; font-weight: 600;
+      padding: 14px 32px; border-radius: 6px; cursor: pointer; border: none;
+      transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
+      box-shadow: 0 0 24px rgba(59,130,246,0.3); text-decoration: none;
+    }
+    .btn-primary:hover { background: #2563eb; box-shadow: 0 0 40px rgba(59,130,246,0.5); transform: translateY(-2px); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid rgba(59,130,246,0.45); color: #93c5fd;
+      font-family: 'Figtree', sans-serif; font-size: 0.875rem; font-weight: 600;
+      padding: 13px 32px; border-radius: 6px; cursor: pointer; background: transparent;
+      transition: border-color 0.25s ease, background 0.25s ease, transform 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-outline:hover { border-color: #3b82f6; background: rgba(59,130,246,0.08); transform: translateY(-2px); }
+    .btn-outline:active { transform: translateY(0); }
+    .btn-outline:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* Section tag */
+    .section-tag { font-family: 'Figtree', sans-serif; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: #93c5fd; font-weight: 600; }
+
+    /* Cards */
+    .card-base { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease; }
+    .card-base:hover { border-color: rgba(59,130,246,0.45); box-shadow: 0 8px 40px rgba(59,130,246,0.08), 0 2px 8px rgba(0,0,0,0.4); transform: translateY(-4px); }
+
+    .card-featured { background: linear-gradient(150deg, #0d1e3c 0%, #0a1628 100%); border: 1px solid rgba(59,130,246,0.45); border-radius: 10px; box-shadow: 0 0 40px rgba(59,130,246,0.12), 0 4px 20px rgba(0,0,0,0.5); position: relative; transition: box-shadow 0.3s ease, transform 0.25s ease; }
+    .card-featured:hover { box-shadow: 0 0 60px rgba(59,130,246,0.2), 0 8px 32px rgba(0,0,0,0.6); transform: translateY(-4px); }
+
+    .badge-featured { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: #3b82f6; color: #ffffff; font-family: 'Figtree', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 16px; border-radius: 99px; white-space: nowrap; }
+
+    /* Divider */
+    .divider { width: 48px; height: 2px; background: linear-gradient(90deg, #3b82f6, transparent); border-radius: 2px; }
+
+    /* Bracket */
+    .bracket { font-family: 'Figtree', sans-serif; color: #3b82f6; opacity: 0.4; font-size: 0.9em; }
+
+    /* Mobile menu */
+    #mobile-menu { display: none; background: rgba(8,12,20,0.97); border-top: 1px solid rgba(59,130,246,0.15); }
+    #mobile-menu.open { display: block; }
+
+    /* Tab buttons */
+    .tab-btn { transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease; }
+    .tab-btn:hover { color: #93c5fd !important; border-color: rgba(59,130,246,0.4) !important; }
+
+    /* Billing toggle knob */
+    #billing-knob { transition: left 0.22s cubic-bezier(.4,0,.2,1); }
+    #billing-toggle { transition: background 0.25s ease; }
+
+    /* Fade in */
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* Cards grid animation on tab switch */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    .grid-animate { animation: fadeUp 0.32s ease; }
+
+  </style>
+</head>
+
+<body class="antialiased">
+
+  <!-- ══════════════════════════ NAVBAR ══════════════════════════ -->
+  <header class="fixed top-0 left-0 right-0 z-50" id="navbar">
+    <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue">
+        <span class="font-display text-sm font-bold text-white tracking-wider hidden sm:block">Carter
+          <span style="color:#3b82f6;">Web Services</span>
+        </span>
+      </a>
+
+      <ul class="hidden md:flex items-center gap-8">
+        <li><a href="index.html#mission" class="nav-link">Mission</a></li>
+        <li><a href="index.html#values"  class="nav-link">Values</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+        <li><a href="pricing.html" class="nav-link" style="color:#93c5fd;">Pricing</a></li>
+      </ul>
+
+      <a href="index.html#contact" class="hidden md:inline-flex btn-primary py-2.5 px-6 text-sm">Get a Quote</a>
+
+      <button id="menu-toggle" aria-label="Toggle menu" class="md:hidden flex flex-col gap-1.5 p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue">
+        <span class="hamburger-line block w-6 h-0.5 bg-gray-light transition-transform duration-300"></span>
+        <span class="hamburger-line block w-6 h-0.5 bg-gray-light transition-opacity duration-300"></span>
+        <span class="hamburger-line block w-6 h-0.5 bg-gray-light transition-transform duration-300"></span>
+      </button>
+    </nav>
+
+    <div id="mobile-menu" class="md:hidden px-6 py-6 flex flex-col gap-6">
+      <a href="index.html#mission"  class="nav-link text-base">Mission</a>
+      <a href="index.html#values"   class="nav-link text-base">Values</a>
+      <a href="index.html#services" class="nav-link text-base">Services</a>
+      <a href="index.html#contact"  class="nav-link text-base">Contact</a>
+      <a href="pricing.html" class="nav-link text-base" style="color:#93c5fd;">Pricing</a>
+      <a href="index.html#contact" class="btn-primary self-start">Get a Quote</a>
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════ HERO ══════════════════════════ -->
+  <section class="relative pt-40 pb-20 overflow-hidden" style="background: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(59,130,246,0.14) 0%, transparent 70%), #080c14;">
+    <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px); background-size: 60px 60px;"></div>
+    <div class="relative z-10 max-w-6xl mx-auto px-6 fade-in">
+      <p class="section-tag mb-4"><span class="bracket">&lt;</span> Pricing <span class="bracket">/&gt;</span></p>
+      <div class="flex items-end gap-6 mb-4">
+        <h1 class="text-4xl md:text-5xl font-display font-bold text-white tracking-tight">Simple, Transparent Pricing</h1>
+        <div class="divider mb-4"></div>
+      </div>
+      <p class="text-gray-DEFAULT max-w-xl text-sm leading-relaxed">Professional web services for businesses ready to grow. Fixed prices, no hidden fees, no surprises.</p>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════ MAIN CONTENT ══════════════════════════ -->
+  <section class="py-16 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 80% 50% at 50% 100%, rgba(59,130,246,0.05) 0%, transparent 70%);"></div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+
+      <!-- Tab bar -->
+      <div class="flex flex-wrap gap-2 mb-12" id="tab-bar"></div>
+
+      <!-- Billing toggle (maintenance + hosting only) -->
+      <div id="billing-wrap" class="hidden flex-wrap items-center gap-4 mb-10">
+        <span class="text-sm font-semibold transition-colors duration-200" id="label-monthly" style="color:#6b7fa3;">Monthly</span>
+        <button id="billing-toggle" aria-label="Toggle billing period"
+          class="relative w-14 h-7 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue"
+          style="background:#141e30; flex-shrink:0;">
+          <div id="billing-knob" class="absolute top-1 w-5 h-5 rounded-full bg-white" style="left:4px; box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div>
+        </button>
+        <span class="text-sm font-semibold transition-colors duration-200" id="label-annual" style="color:#6b7fa3;">
+          Annual
+          <span class="ml-1.5 text-xs font-bold rounded-full px-2 py-0.5" style="background:rgba(34,197,94,0.12);color:#22c55e;">SAVE UP TO 20%</span>
+        </span>
+      </div>
+
+      <!-- Cards grid -->
+      <div id="plans-grid"></div>
+
+      <!-- Footer note -->
+      <p class="mt-10 text-xs text-center" style="color:#4a5a7a;">
+        Questions? <a href="mailto:CarterTechnologiesllc@gmail.com" style="color:#3b82f6;" class="hover:underline">CarterTechnologiesllc@gmail.com</a>
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+  <footer class="py-10" style="background:#080c14; border-top:1px solid rgba(255,255,255,0.06);">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <span class="text-xs text-gray-DEFAULT">Carter Web Services</span>
+      <p class="text-xs text-center" style="color:#4a5a7a;">
+        <span class="bracket">&lt;</span> © <span id="year"></span> Carter Technologies LLC <span class="bracket">/&gt;</span>
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <a href="terms.html" class="nav-link text-xs">Terms</a>
+        <a href="cancellation-policy.html" class="nav-link text-xs">Cancellation Policy</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+  <!-- ══════════════════════════ SCRIPTS ══════════════════════════ -->
+  <script>
+    // ── Data ──────────────────────────────────────────────────────────────
+
+    const TABS = [
+      { id: "builds",       label: "Website Builds"    },
+      { id: "restructure",  label: "Site Restructure"  },
+      { id: "migrations",   label: "Site Migrations"   },
+      { id: "maintenance",  label: "Maintenance"       },
+      { id: "hosting",      label: "Hosting Plans"     },
+    ];
+
+    const PRICES = {
+      builds: [
+        {
+          name: "Basic", price: 299,
+          desc: "A clean, professional 5-page site ready to launch.",
+          features: ["5 Custom Pages","Mobile Responsive","Contact Form","Basic On-Page SEO","3 Revision Round"],
+          type: "one-time", priceId: "price_REPLACE_starter_build",
+        },
+        {
+          name: "Standard", price: 799, popular: true,
+          desc: "A fully custom site built to convert visitors into clients.",
+          features: ["Basic Features Included","Up to 10 Custom Pages","Custom UI/UX Design","Advanced SEO Setup","Google Analytics","Blog / CMS Integration","30-Day Support"],
+          type: "one-time", priceId: "price_REPLACE_pro_build",
+        },
+        {
+          name: "Premium", price: 1599,
+          desc: "A full WooCommerce store built to sell from day one.",
+          features: ["Standard Features Included","Unlimited Pages","WooCommerce Store","Payment Gateway Setup","Product Catalog Setup","Inventory Management","Coupon & Tax Config","60-Day Support"],
+          type: "one-time", priceId: "price_REPLACE_ecom_build",
+        },
+        
+      ],
+      restructure: [
+        {
+          name: "Basic", price: 149,
+          desc: "Reorganize a simple 5-page site using your existing content — no new copy or media added.",
+          features: ["Up to 5 Pages Restructured","Mobile Responsive","Contact Form","Basic On-Page SEO","3 Revision Rounds"],
+          type: "one-time", priceId: "price_REPLACE_basic_restructure",
+        },
+        {
+          name: "Standard", price: 399, popular: true,
+          desc: "Redesign the layout and flow of your existing site — all current content, rebuilt with purpose.",
+          features: ["Basic Included","Up to 10 Pages Restructured","Custom UI/UX Redesign","Advanced SEO Setup","Google Analytics","Blog / CMS Integration","30-Day Support"],
+          type: "one-time", priceId: "price_REPLACE_std_restructure",
+        },
+        {
+          name: "Premium", price: 799,
+          desc: "Full restructure of a large or eCommerce site — your existing catalog and content, reorganized.",
+          features: ["Standard Included","Unlimited Pages","WooCommerce Restructure","Payment Gateway Config","Product Catalog Reorganization","Inventory Management","Coupon & Tax Config","60-Day Support"],
+          type: "one-time", priceId: "price_REPLACE_premium_restructure",
+        },
+      ],
+      migrations: [
+        {
+          name: "Basic", price: 149,
+          desc: "Move a simple HTML or static site to a new host.",
+          features: ["Up to 10 Pages","Domain Transfer Assist","DNS Configuration","Email Migration","48-Hour Turnaround"],
+          type: "one-time", priceId: "price_REPLACE_basic_migration",
+        },
+        {
+          name: "Standard", price: 299, popular: true,
+          desc: "Full WordPress or CMS platform migration.",
+          features: ["Unlimited Pages","WordPress / CMS Migration","Database Transfer","Plugin Compatibility Check","SSL Setup","24-Hour Support"],
+          type: "one-time", priceId: "price_REPLACE_std_migration",
+        },
+        {
+          name: "Complex", price: 499,
+          desc: "Large or custom-built sites with advanced requirements.",
+          features: ["Everything in Standard","Custom Scripting","Multi-site Configuration","Performance Testing","Post-Migration QA Report"],
+          type: "one-time", priceId: "price_REPLACE_complex_migration",
+        },
+      ],
+      maintenance: [
+        {
+          name: "Basic", monthlyPrice: 49, annualPrice: 470,
+          desc: "Essentials to keep your site healthy and secure.",
+          features: ["Monthly Core & Plugin Updates","Weekly Backups","Uptime Monitoring","24/7 Support"],
+          type: "subscription",
+          monthlyPriceId: "price_REPLACE_basic_maint_mo", annualPriceId: "price_REPLACE_basic_maint_yr",
+        },
+      ],
+      hosting: [
+        {
+          name: "Starter", monthlyPrice: 19, annualPrice: 182,
+          desc: "Get your hosting reseller business off the ground.",
+          features: ["10 Client Accounts","50GB SSD Storage","cPanel / WHM Access","Free SSL for All Clients","WHMCS Billing Included","White-label Ready"],
+          type: "subscription",
+          monthlyPriceId: "price_REPLACE_starter_host_mo", annualPriceId: "price_REPLACE_starter_host_yr",
+        },
+        {
+          name: "Pro", monthlyPrice: 39, annualPrice: 374, popular: true,
+          desc: "Scale your client base with more power and resources.",
+          features: ["25 Client Accounts","150GB SSD Storage","Everything in Starter","Priority Support","Custom Nameservers","LiteSpeed Servers"],
+          type: "subscription",
+          monthlyPriceId: "price_REPLACE_pro_host_mo", annualPriceId: "price_REPLACE_pro_host_yr",
+        },
+        {
+          name: "Agency", monthlyPrice: 79, annualPrice: 758,
+          desc: "Unlimited clients and maximum resources for your agency.",
+          features: ["Unlimited Client Accounts","300GB SSD Storage","Everything in Pro","Monthly Usage Reports","Dedicated IP Option","Full WHMCS Automation"],
+          type: "subscription",
+          monthlyPriceId: "price_REPLACE_agency_host_mo", annualPriceId: "price_REPLACE_agency_host_yr",
+        },
+      ],
+    };
+
+    // ── State ──────────────────────────────────────────────────────────────
+
+    let activeTab = "builds";
+    let billing   = "monthly";
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+
+    function getDisplayPrice(plan) {
+      if (plan.type === "custom")      return null;
+      if (plan.type === "one-time")    return plan.price;
+      return billing === "annual" ? plan.annualPrice : plan.monthlyPrice;
+    }
+
+    function getPeriod(plan) {
+      if (plan.type === "one-time") return "one-time";
+      return billing === "annual" ? "/yr" : "/mo";
+    }
+
+    function getSavings(plan) {
+      if (plan.type !== "subscription") return null;
+      const saved = plan.monthlyPrice * 12 - plan.annualPrice;
+      return Math.round((saved / (plan.monthlyPrice * 12)) * 100);
+    }
+
+    // ── Render: tab bar ────────────────────────────────────────────────────
+
+    function renderTabs() {
+      const bar = document.getElementById("tab-bar");
+      bar.innerHTML = TABS.map(tab => {
+        const isActive = activeTab === tab.id;
+        return `<button
+          class="tab-btn text-xs font-semibold tracking-widest uppercase px-5 py-2 rounded-full border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue"
+          style="
+            border-color: ${isActive ? "rgba(59,130,246,0.5)" : "rgba(255,255,255,0.08)"};
+            background:   ${isActive ? "rgba(59,130,246,0.12)" : "rgba(255,255,255,0.025)"};
+            color:        ${isActive ? "#93c5fd" : "#6b7fa3"};
+          "
+          data-tab="${tab.id}"
+          aria-pressed="${isActive}"
+        >${tab.label}</button>`;
+      }).join("");
+
+      bar.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeTab = btn.dataset.tab;
+          renderTabs();
+          renderBillingToggle();
+          renderCards(true);
+        });
+      });
+    }
+
+    // ── Render: billing toggle ─────────────────────────────────────────────
+
+    function renderBillingToggle() {
+      const wrap    = document.getElementById("billing-wrap");
+      const toggle  = document.getElementById("billing-toggle");
+      const knob    = document.getElementById("billing-knob");
+      const labelMo = document.getElementById("label-monthly");
+      const labelYr = document.getElementById("label-annual");
+      const show    = ["maintenance", "hosting"].includes(activeTab);
+
+      wrap.style.display   = show ? "flex" : "none";
+      toggle.style.background = billing === "annual" ? "#3b82f6" : "#141e30";
+      knob.style.left      = billing === "annual" ? "28px" : "4px";
+      labelMo.style.color  = billing === "monthly" ? "#e8edf5" : "#6b7fa3";
+      labelYr.style.color  = billing === "annual"  ? "#e8edf5" : "#6b7fa3";
+    }
+
+    // ── Render: cards ──────────────────────────────────────────────────────
+
+    function renderCards(animate = false) {
+      const grid  = document.getElementById("plans-grid");
+      const plans = PRICES[activeTab];
+
+      // Grid columns: 4-col for builds (4 plans), 1-col centered for single card, 3-col for others
+      const colClass = plans.length === 4
+        ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch"
+        : plans.length === 1
+          ? "flex justify-center"
+          : "grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch";
+
+      grid.className = colClass + (animate ? " grid-animate" : "");
+      if (animate) {
+        void grid.offsetWidth; // reflow to restart animation
+      }
+
+      grid.innerHTML = plans.map(plan => {
+        const price   = getDisplayPrice(plan);
+        const period  = getPeriod(plan);
+        const savings = getSavings(plan);
+        const isPopular = !!plan.popular;
+
+        // Price block
+        let priceHTML;
+        if (plan.type === "custom") {
+          priceHTML = `<span class="font-display text-4xl font-bold text-white">Custom</span>`;
+        } else {
+          priceHTML = `
+            <span class="font-display text-4xl font-bold text-white">$${price.toLocaleString()}</span>
+            <span class="text-gray-DEFAULT text-sm ml-1">${period}</span>
+            ${billing === "annual" && savings ? `<div class="text-xs mt-1.5" style="color:#22c55e;">Save ${savings}% vs. monthly</div>` : ""}
+          `;
+        }
+
+        // CTA
+        const ctaLabel  = plan.type === "custom" ? "Request a Quote" : "Get Started";
+        const ctaClass  = isPopular ? "btn-primary w-full justify-center" : "btn-outline w-full justify-center";
+
+        const singleCard = plans.length === 1 ? ' style="width:100%;max-width:380px;"' : '';
+        return `
+          <div class="${isPopular ? "card-featured" : "card-base"} p-8 flex flex-col"${singleCard}>
+            ${isPopular ? '<div class="badge-featured">Most Popular</div>' : ""}
+
+            <p class="section-tag text-xs mb-2">${plan.name}</p>
+            <p class="text-gray-DEFAULT text-xs leading-relaxed mb-4">${plan.desc}</p>
+
+            <div class="mt-2 mb-6">${priceHTML}</div>
+
+            <div class="divider mb-6"></div>
+
+            <ul class="space-y-3 text-sm text-gray-DEFAULT mb-8 flex-1">
+              ${plan.features.map(f => `
+                <li class="flex items-center gap-3">
+                  <span style="color:#22c55e;font-weight:700;">✓</span>${f}
+                </li>`).join("")}
+            </ul>
+
+            <button
+              class="${ctaClass}"
+              data-plan='${JSON.stringify(plan).replace(/'/g, "&#39;")}'
+              aria-label="${plan.type === "custom" ? "Request a quote for " : "Get started with "}${plan.name}"
+            >${ctaLabel}</button>
+          </div>`;
+      }).join("");
+
+      // Attach click handlers
+      grid.querySelectorAll("button[data-plan]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const plan = JSON.parse(btn.dataset.plan.replace(/&#39;/g, "'"));
+          if (plan.type === "custom") {
+            window.location.href = "mailto:CarterTechnologiesllc@gmail.com?subject=Enterprise%20Quote%20Request";
+          } else {
+            window.location.href = "index.html#contact";
+          }
+        });
+      });
+    }
+
+    // ── Wire billing toggle ────────────────────────────────────────────────
+
+    document.getElementById("billing-toggle").addEventListener("click", () => {
+      billing = billing === "monthly" ? "annual" : "monthly";
+      renderBillingToggle();
+      renderCards(false);
+    });
+
+    // ── Navbar scroll ──────────────────────────────────────────────────────
+
+    const navbar = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+      navbar.classList.toggle("scrolled", window.scrollY > 40);
+    }, { passive: true });
+
+    // ── Mobile menu ────────────────────────────────────────────────────────
+
+    const toggle     = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const lines      = toggle.querySelectorAll(".hamburger-line");
+
+    toggle.addEventListener("click", () => {
+      const open = mobileMenu.classList.toggle("open");
+      lines[0].style.transform = open ? "translateY(8px) rotate(45deg)" : "";
+      lines[1].style.opacity   = open ? "0" : "";
+      lines[2].style.transform = open ? "translateY(-8px) rotate(-45deg)" : "";
+    });
+    mobileMenu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      lines[0].style.transform = "";
+      lines[1].style.opacity   = "";
+      lines[2].style.transform = "";
+    }));
+
+    // ── Footer year ────────────────────────────────────────────────────────
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // ── Fade-in observer ───────────────────────────────────────────────────
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add("visible"); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll(".fade-in").forEach(el => observer.observe(el));
+
+    // ── Init ───────────────────────────────────────────────────────────────
+
+    renderTabs();
+    renderBillingToggle();
+    renderCards();
+  </script>
+</body>
+</html>

@@ -2,39 +2,44 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'php/vendor/autoload.php'; // Adjust the path based on your PHPMailer location
+require 'php/vendor/autoload.php';
 require 'phpmailer/phpmailer/src/Exception.php';
 require 'phpmailer/phpmailer/src/PHPMailer.php';
 require 'phpmailer/phpmailer/src/SMTP.php';
 
+// Load .env file
+$envFile = __DIR__ . '/.env';
+if (file_exists($envFile)) {
+    foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        if (str_starts_with(trim($line), '#')) continue;
+        [$key, $value] = explode('=', $line, 2);
+        $_ENV[trim($key)] = trim($value);
+    }
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $name = $_POST["name"];
-    $email = $_POST["email"];
+    $name    = $_POST["name"];
+    $email   = $_POST["email"];
     $message = $_POST["message"];
 
-    // Basic email validation
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         die("Invalid email address.");
     }
 
-    // Send email using PHPMailer
     $mail = new PHPMailer(true);
 
     try {
-        //Server settings
-        $mail->SMTPDebug = 0;                      // Enable verbose debug output
-        $mail->isSMTP();                                            // Send using SMTP
-        $mail->Host       = 'smtp.gmail.com';                     // Set the SMTP server to send through
-        $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
-        $mail->Username   = 'cartertechnologiesllc@gmail.com';                // SMTP username
-        $mail->Password   = 'fbsdhzofxjseymrd';                   // SMTP password
-        $mail->SMTPSecure = 'tls';                                  // Enable TLS encryption
-        $mail->Port       = 587;                                    // TCP port to connect to
+        $mail->SMTPDebug = 0;
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $_ENV['SMTP_USER'];
+        $mail->Password   = $_ENV['SMTP_PASS'];
+        $mail->SMTPSecure = 'tls';
+        $mail->Port       = 587;
 
-        //Recipients
         $mail->setFrom($email, $name);
-        $mail->addAddress('cartertechnologiesllc@gmail.com');   // Add a recipient
+        $mail->addAddress($_ENV['SMTP_TO']);
 
         // Content
         $mail->isHTML(true);                                  // Set email format to HTML
