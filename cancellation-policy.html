@@ -27,13 +27,14 @@
 
     /* ── Base ── */
     *, *::before, *::after { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; overflow-x: hidden; }
     body {
       background: #080c14;
       color: var(--text-primary);
       font-family: 'DM Sans', sans-serif;
       font-size: 0.95rem;
       line-height: 1.75;
+      overflow-x: hidden;
     }
 
     ::-webkit-scrollbar { width: 6px; }
