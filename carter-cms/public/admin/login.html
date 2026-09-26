@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Sign in | Carter CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display&display=swap">
+  <link rel="stylesheet" href="/bootstrap-5.2.0-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin login-page">
+  <main class="login-wrap">
+    <p class="admin-mark login-mark">Carter <span>CMS</span></p>
+    <form class="login-card" id="login-form" novalidate>
+      <h1>Sign in</h1>
+      <div class="mb-3">
+        <label class="form-label" for="email">Email</label>
+        <input class="form-control" id="email" type="email" autocomplete="username" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="password">Password</label>
+        <input class="form-control" id="password" type="password" autocomplete="current-password" required>
+      </div>
+      <p id="login-msg" class="login-msg" role="alert" hidden></p>
+      <button class="btn btn-brand w-100" type="submit">Sign in</button>
+      <button class="btn btn-link login-reset" type="button" id="reset">Forgot password?</button>
+    </form>
+  </main>
+
+  <script type="module">
+    import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { app } from "../cms/firebase.js";
+
+    const auth = getAuth(app);
+    const form = document.getElementById("login-form");
+    const msg = document.getElementById("login-msg");
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const show = (text, ok = false) => { msg.textContent = text; msg.hidden = false; msg.classList.toggle("is-ok", ok); };
+
+    onAuthStateChanged(auth, user => { if (user) location.replace("./"); });
+
+    const messages = {
+      "auth/invalid-credential": "That email and password don't match. Try again or reset your password.",
+      "auth/invalid-email": "Enter a valid email address.",
+      "auth/too-many-requests": "Too many attempts. Wait a few minutes or reset your password.",
+      "auth/network-request-failed": "Can't reach the server. Check your connection and try again."
+    };
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const btn = form.querySelector("[type=submit]");
+      btn.disabled = true;
+      try {
+        await signInWithEmailAndPassword(auth, email.value.trim(), password.value);
+      } catch (err) {
+        show(messages[err.code] || "Sign-in didn't work. Try again.");
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById("reset").addEventListener("click", async () => {
+      const addr = email.value.trim();
+      if (!addr) { show("Enter your email above, then choose Forgot password."); email.focus(); return; }
+      try {
+        await sendPasswordResetEmail(auth, addr);
+        show(`If ${addr} has an account, a reset link is on its way.`, true);
+      } catch (err) {
+        show(messages[err.code] || "Couldn't send the reset email. Try again.");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "name": "carter-cms-scripts",
+  "private": true,
+  "description": "One-off admin tasks for Carter CMS (run locally, never deployed)",
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}

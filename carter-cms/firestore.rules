@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+
+    // Set with scripts/set-admin.js. That's you (Carter): full access to every site.
+    function platformAdmin() { return signedIn() && request.auth.token.get('platformAdmin', false) == true; }
+
+    function roleIn(siteId) {
+      return get(/databases/$(database)/documents/siteMembers/$(siteId)).data.roles.get(request.auth.uid, '');
+    }
+    function isMember(siteId) { return platformAdmin() || (signedIn() && roleIn(siteId) in ['owner', 'editor']); }
+    function isOwner(siteId)  { return platformAdmin() || (signedIn() && roleIn(siteId) == 'owner'); }
+
+    function validPage() {
+      let p = request.resource.data;
+      return p.title is string && p.title.size() > 0 && p.title.size() <= 200
+        && p.slug is string && p.slug.matches('^[a-z0-9]+(-[a-z0-9]+)*$')
+        && p.status in ['draft', 'published']
+        && p.blocks is list && p.blocks.size() <= 100
+        && p.updatedBy == request.auth.uid;
+    }
+
+    // Public site settings: name, nav, theme, footer, domain.
+    match /sites/{siteId} {
+      allow get: if true;
+      allow list: if platformAdmin();
+      allow create, delete: if platformAdmin();
+      allow update: if isOwner(siteId);
+
+      match /pages/{pageId} {
+        allow read: if resource.data.status == 'published' || isMember(siteId);
+        allow create, update: if isMember(siteId) && validPage();
+        allow delete: if isOwner(siteId);
+      }
+    }
+
+    // Who can edit each site. Kept separate so member IDs are never public.
+    match /siteMembers/{siteId} {
+      allow read: if platformAdmin() || (signedIn() && request.auth.uid in resource.data.memberIds);
+      allow create, delete: if platformAdmin();
+      allow update: if platformAdmin()
+        || (isOwner(siteId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['siteName']));
+    }
+  }
+}

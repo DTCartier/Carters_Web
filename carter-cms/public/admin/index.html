@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Carter CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display&display=swap">
+  <link rel="stylesheet" href="/bootstrap-5.2.0-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+  <div class="admin-shell">
+    <aside class="admin-side">
+      <a class="admin-mark" href="#/pages">Carter <span>CMS</span></a>
+
+      <div class="admin-site">
+        <label class="admin-side-label" for="site-switch">Editing</label>
+        <select id="site-switch" class="form-select form-select-sm"></select>
+        <p class="admin-role" id="site-role"></p>
+      </div>
+
+      <nav class="admin-nav" aria-label="Admin">
+        <a href="#/pages" data-nav="pages">Pages</a>
+        <a href="#/settings" data-nav="settings">Site settings</a>
+        <a href="#/new-site" data-nav="new-site" id="nav-new-site" hidden>New site</a>
+        <a href="/" id="view-site" target="_blank" rel="noopener">View site</a>
+      </nav>
+
+      <div class="admin-user">
+        <span id="user-email"></span>
+        <button type="button" class="btn btn-link" id="sign-out">Sign out</button>
+      </div>
+    </aside>
+
+    <main id="view" class="admin-main" tabindex="-1">
+      <p class="text-muted">Loading…</p>
+    </main>
+  </div>
+
+  <div class="admin-toasts" id="toasts" role="status" aria-live="polite"></div>
+
+  <div class="modal fade" id="preview-modal" tabindex="-1" aria-labelledby="preview-title" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="preview-title">Preview</h2>
+          <div class="btn-group btn-group-sm ms-3" role="group" aria-label="Preview width">
+            <button type="button" class="btn btn-quiet active" data-width="100%" aria-pressed="true">Desktop</button>
+            <button type="button" class="btn btn-quiet" data-width="390px" aria-pressed="false">Phone</button>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close preview"></button>
+        </div>
+        <div class="modal-body preview-wrap">
+          <iframe id="preview-frame" class="preview-frame" title="Page preview" sandbox="allow-same-origin"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/bootstrap-5.2.0-dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

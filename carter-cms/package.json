@@ -1,0 +1,11 @@
+{
+  "name": "carter-cms",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build/prerender.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

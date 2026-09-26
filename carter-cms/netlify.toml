@@ -1,0 +1,30 @@
+[build]
+  command = "node build/prerender.mjs"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  directory = "netlify/functions"
+
+# No catch-all redirect: every published page is a real file (/about → about.html),
+# and anything else gets dist/404.html with a true 404 status.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/cms/*"
+  [headers.values]
+    Cache-Control = "no-cache"

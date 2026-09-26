@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loading…</title>
+  <meta name="description" content="">
+  <!--cms:meta-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display&display=swap">
+  <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/css/site.css">
+</head>
+<body>
+  <!--
+    Page template. At deploy time, build/prerender.mjs fills the cms:* markers and writes one
+    static HTML file per published page. Opened without the build (local testing), the module
+    script at the bottom renders the page in the browser instead.
+  -->
+  <a class="visually-hidden-focusable cms-skip" href="#cms-main">Skip to content</a>
+
+  <header class="cms-header">
+    <nav class="navbar navbar-expand-md navbar-dark" aria-label="Main">
+      <div class="container">
+        <a class="navbar-brand" id="cms-brand" href="/"><!--cms:brand--></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#cms-navbar"
+                aria-controls="cms-navbar" aria-expanded="false" aria-label="Open menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="cms-navbar">
+          <ul class="navbar-nav ms-auto" id="cms-nav"><!--cms:nav--></ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="cms-main" tabindex="-1"><!--cms:main-->
+    <div class="cms-loading" aria-hidden="true"><div class="container"><span></span><span></span><span></span></div></div>
+  <!--/cms:main--></main>
+
+  <footer class="cms-footer"><div class="container" id="cms-footer"><!--cms:footer--></div></footer>
+
+  <script src="/bootstrap-5.2.0-dist/js/bootstrap.bundle.min.js"></script>
+  <!--cms:script-->
+  <script type="module">
+    import { mount } from "/cms/cms-client.js";
+    mount();
+  </script>
+  <!--/cms:script-->
+</body>
+</html>
