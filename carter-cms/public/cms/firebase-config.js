@@ -11,4 +11,4 @@ export const firebaseConfig = {
 
 // Which site this deployment renders. One Firebase project holds many client sites;
 // each Netlify deploy of /public points at one of them.
-export const SITE_ID = "dropasite-2e317";
+export const SITE_ID = "test";

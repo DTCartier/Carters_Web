@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carter CMS — Carter Web Services</title>
+  <meta name="description"
+    content="Carter CMS lets you edit and publish your own website pages from a simple dashboard. Fast static pages, built-in SEO, and no plugins to maintain." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Figtree:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            blue: { DEFAULT: '#3b82f6', muted: '#93c5fd', glow: '#3b82f633' },
+            dark: { DEFAULT: '#080c14', 800: '#0d1422', 700: '#0f1829', 600: '#121f34', 500: '#162438' },
+            gray: { DEFAULT: '#6b7fa3', light: '#e8edf5', muted: '#4a5a7a' },
+          },
+          fontFamily: {
+            display: ['Syne', 'sans-serif'],
+            sans: ['Figtree', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      background: #080c14;
+      color: #e8edf5;
+      font-family: 'Figtree', sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0d1422;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #3b82f644;
+      border-radius: 3px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: 'Syne', sans-serif;
+      line-height: 1.15;
+    }
+
+    h1,
+    h2 {
+      letter-spacing: -0.03em;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid #93c5fd;
+      outline-offset: 3px;
+    }
+
+    /* Navbar */
+    #navbar {
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #navbar.scrolled {
+      background: rgba(8, 12, 20, 0.92);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(59, 130, 246, 0.15);
+    }
+
+    /* Nav links */
+    .nav-link {
+      position: relative;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      color: #6b7fa3;
+      transition: color 0.25s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: #3b82f6;
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #93c5fd;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-link:active {
+      color: #e8edf5;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #3b82f6;
+      color: #ffffff;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
+      box-shadow: 0 0 24px rgba(59, 130, 246, 0.3);
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+      box-shadow: 0 0 40px rgba(59, 130, 246, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(59, 130, 246, 0.45);
+      color: #93c5fd;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 13px 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      background: transparent;
+      transition: border-color 0.25s ease, background 0.25s ease, transform 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-outline:hover {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline:active {
+      transform: translateY(0);
+    }
+
+    /* Section tag */
+    .section-tag {
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+    /* Cards */
+    .card-base {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+    }
+
+    .card-base:hover {
+      border-color: rgba(59, 130, 246, 0.45);
+      box-shadow: 0 8px 40px rgba(59, 130, 246, 0.08), 0 2px 8px rgba(0, 0, 0, 0.4);
+      transform: translateY(-4px);
+    }
+
+    .card-featured {
+      background: linear-gradient(150deg, #0d1e3c 0%, #0a1628 100%);
+      border: 1px solid rgba(59, 130, 246, 0.45);
+      border-radius: 10px;
+      box-shadow: 0 0 40px rgba(59, 130, 246, 0.12), 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .icon-chip {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      color: #93c5fd;
+    }
+
+    .step-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2.5rem;
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(59, 130, 246, 0.55);
+    }
+
+    /* Divider */
+    .divider {
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(90deg, #3b82f6, transparent);
+      border-radius: 2px;
+    }
+
+    /* Bracket */
+    .bracket {
+      font-family: 'Figtree', sans-serif;
+      color: #3b82f6;
+      opacity: 0.4;
+      font-size: 0.9em;
+    }
+
+    /* Editor mockup */
+    .mock-window {
+      background: #0b1220;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: 12px;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02), 0 30px 80px -20px rgba(59, 130, 246, 0.25), 0 12px 32px rgba(0, 0, 0, 0.55);
+      overflow: hidden;
+    }
+
+    .mock-bar {
+      background: #0d1422;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .mock-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #1e2b42;
+    }
+
+    .mock-block {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+    }
+
+    .mock-block.active {
+      border-color: rgba(59, 130, 246, 0.55);
+      background: rgba(59, 130, 246, 0.06);
+      box-shadow: 0 0 24px rgba(59, 130, 246, 0.12);
+    }
+
+    .mock-line {
+      height: 7px;
+      border-radius: 4px;
+      background: rgba(232, 237, 245, 0.1);
+    }
+
+    .mock-field {
+      background: #080c14;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: #e8edf5;
+    }
+
+    .pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 99px;
+      padding: 3px 10px;
+    }
+
+    .grain {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.05;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* Mobile menu */
+    #mobile-menu {
+      display: none;
+      background: rgba(8, 12, 20, 0.97);
+      border-top: 1px solid rgba(59, 130, 246, 0.15);
+    }
+
+    #mobile-menu.open {
+      display: block;
+    }
+
+    /* Fade in */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s cubic-bezier(.2, .8, .2, 1), transform 0.6s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .fade-in,
+      .card-base,
+      .btn-primary,
+      .btn-outline {
+        transition: none;
+        transform: none;
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body class="antialiased">
+
+  <!-- ══════════════════════════ NAVBAR ══════════════════════════ -->
+  <header class="fixed top-0 left-0 right-0 z-50" id="navbar">
+    <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="font-display text-sm font-bold text-white tracking-wider hidden sm:block">Carter
+          <span style="color:#3b82f6;">Web Services</span>
+        </span>
+      </a>
+
+      <ul class="hidden md:flex items-center gap-8">
+        <li><a href="index.html#mission" class="nav-link">Mission</a></li>
+        <li><a href="index.html#values" class="nav-link">Values</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+        <li><a href="pricing.html" class="nav-link">Pricing</a></li>
+        <li><a href="cms.html" class="nav-link" style="color:#93c5fd;" aria-current="page">CMS</a></li>
+      </ul>
+
+      <a href="index.html#contact" class="hidden md:inline-flex btn-primary py-2.5 px-6 text-sm">Get a Quote</a>
+
+      <button id="menu-toggle" aria-label="Toggle menu" class="md:hidden flex flex-col gap-1.5 p-2">
+        <span class="hamburger-line block w-6 h-0.5 bg-gray-light transition-transform duration-300"></span>
+        <span class="hamburger-line block w-6 h-0.5 bg-gray-light transition-opacity duration-300"></span>
+        <span class="hamburger-line block w-6 h-0.5 bg-gray-light transition-transform duration-300"></span>
+      </button>
+    </nav>
+
+    <div id="mobile-menu" class="md:hidden px-6 py-6 flex flex-col gap-6">
+      <a href="index.html#mission" class="nav-link text-base">Mission</a>
+      <a href="index.html#values" class="nav-link text-base">Values</a>
+      <a href="index.html#services" class="nav-link text-base">Services</a>
+      <a href="index.html#contact" class="nav-link text-base">Contact</a>
+      <a href="pricing.html" class="nav-link text-base">Pricing</a>
+      <a href="cms.html" class="nav-link text-base" style="color:#93c5fd;" aria-current="page">CMS</a>
+      <a href="index.html#contact" class="btn-primary self-start">Get a Quote</a>
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════ HERO ══════════════════════════ -->
+  <section class="relative pt-40 pb-24 overflow-hidden"
+    style="background: radial-gradient(ellipse 70% 55% at 85% 10%, rgba(59,130,246,0.16) 0%, transparent 70%), radial-gradient(ellipse 60% 50% at 0% 60%, rgba(147,197,253,0.06) 0%, transparent 70%), #080c14;">
+    <div class="absolute inset-0 pointer-events-none"
+      style="background-image: linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px); background-size: 60px 60px;">
+    </div>
+    <div class="grain"></div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-6 grid lg:grid-cols-12 gap-14 items-center">
+      <div class="lg:col-span-5 fade-in">
+        <p class="section-tag mb-4"><span class="bracket">&lt;</span> Carter CMS <span class="bracket">/&gt;</span></p>
+        <h1 class="text-4xl md:text-5xl font-display font-bold text-white mb-6">Update your website yourself.
+          <span style="color:#93c5fd;">No developer needed.</span></h1>
+        <p class="text-gray-DEFAULT max-w-md text-base mb-10">Carter CMS is the editor we build into client sites.
+          Log in, change your text and photos, hit Publish, and your site is updated in about a minute.</p>
+        <div class="flex flex-wrap gap-4">
+          <a href="index.html#contact" class="btn-primary">Add It to My Site</a>
+          <a href="#how-it-works" class="btn-outline">See How It Works</a>
+        </div>
+      </div>
+
+      <!-- Editor mockup -->
+      <div class="lg:col-span-7 fade-in" style="transition-delay: 0.12s;" aria-hidden="true">
+        <div class="mock-window">
+          <div class="mock-bar flex items-center gap-2 px-4 py-3">
+            <span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span>
+            <span class="ml-3 text-xs px-3 py-1 rounded-md truncate"
+              style="background:#080c14;color:#6b7fa3;">yourbusiness.com/admin</span>
+          </div>
+          <div class="grid grid-cols-12">
+            <aside class="hidden sm:block col-span-3 p-4 space-y-1 text-xs"
+              style="border-right:1px solid rgba(255,255,255,0.06);">
+              <p class="section-tag mb-3" style="font-size:0.6rem;">Pages</p>
+              <p class="px-2 py-1.5 rounded" style="background:rgba(59,130,246,0.12);color:#e8edf5;">Home</p>
+              <p class="px-2 py-1.5" style="color:#6b7fa3;">About</p>
+              <p class="px-2 py-1.5" style="color:#6b7fa3;">Services</p>
+              <p class="px-2 py-1.5" style="color:#6b7fa3;">Contact</p>
+            </aside>
+            <div class="col-span-12 sm:col-span-9 p-5 space-y-3">
+              <div class="flex items-center justify-between mb-1">
+                <div class="flex items-center gap-3">
+                  <span class="font-display text-sm font-bold text-white">Home</span>
+                  <span class="pill" style="background:rgba(34,197,94,0.12);color:#22c55e;">Published</span>
+                </div>
+                <span class="text-xs font-semibold px-3 py-1.5 rounded-md text-white"
+                  style="background:#3b82f6;box-shadow:0 0 18px rgba(59,130,246,0.35);">Publish</span>
+              </div>
+
+              <div class="mock-block active p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-xs font-semibold" style="color:#93c5fd;">Hero</span>
+                  <span class="text-xs" style="color:#4a5a7a;">↑ ↓</span>
+                </div>
+                <p class="text-[0.65rem] mb-1" style="color:#6b7fa3;">Headline</p>
+                <div class="mock-field px-3 py-2 mb-3">Fresh bread, baked every morning<span
+                    class="inline-block w-px h-3 align-middle ml-0.5" style="background:#93c5fd;"></span></div>
+                <p class="text-[0.65rem] mb-1" style="color:#6b7fa3;">Supporting text</p>
+                <div class="mock-field px-3 py-2" style="color:#6b7fa3;">Open 7am–3pm, Tuesday through Sunday.</div>
+              </div>
+
+              <div class="mock-block p-4">
+                <span class="text-xs font-semibold" style="color:#6b7fa3;">Features</span>
+                <div class="grid grid-cols-3 gap-3 mt-3">
+                  <div class="mock-line"></div>
+                  <div class="mock-line"></div>
+                  <div class="mock-line"></div>
+                </div>
+              </div>
+
+              <div class="mock-block p-4 flex items-center justify-between">
+                <span class="text-xs font-semibold" style="color:#6b7fa3;">Call to action</span>
+                <div class="mock-line w-24"></div>
+              </div>
+
+              <p class="text-center text-xs pt-1" style="color:#4a5a7a;">+ Add section</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════ HOW IT WORKS ══════════════════════════ -->
+  <section id="how-it-works" class="py-24 relative overflow-hidden"
+    style="background:#0b111d; border-top:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04);">
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+      <div class="fade-in">
+        <p class="section-tag mb-4">How it works</p>
+        <div class="flex items-end gap-6 mb-4">
+          <h2 class="text-4xl md:text-5xl font-display font-bold text-white">Three steps to a live change</h2>
+          <div class="divider mb-4 hidden sm:block"></div>
+        </div>
+        <p class="text-gray-DEFAULT max-w-xl mb-16 text-sm">No software to install and nothing to learn beyond
+          filling in a form.</p>
+      </div>
+
+      <ol class="grid md:grid-cols-3 gap-6">
+        <li class="card-base p-8 fade-in">
+          <span class="step-num block mb-6">01</span>
+          <h3 class="text-lg font-bold text-white mb-2">Log in on your own site</h3>
+          <p class="text-gray-DEFAULT text-sm">Go to <span style="color:#93c5fd;">yourdomain.com/admin</span> and
+            sign in. You only see your own website.</p>
+        </li>
+        <li class="card-base p-8 fade-in" style="transition-delay: 0.08s;">
+          <span class="step-num block mb-6">02</span>
+          <h3 class="text-lg font-bold text-white mb-2">Edit in sections</h3>
+          <p class="text-gray-DEFAULT text-sm">Pages are built from ready-made sections: banners, text, photos,
+            feature lists and calls to action. Preview before anything goes live.</p>
+        </li>
+        <li class="card-base p-8 fade-in" style="transition-delay: 0.16s;">
+          <span class="step-num block mb-6">03</span>
+          <h3 class="text-lg font-bold text-white mb-2">Publish</h3>
+          <p class="text-gray-DEFAULT text-sm">Click Publish and your site is rebuilt automatically. Changes are
+            live in about a minute.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════ FEATURES ══════════════════════════ -->
+  <section class="py-28 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none"
+      style="background: radial-gradient(ellipse 80% 50% at 50% 100%, rgba(59,130,246,0.06) 0%, transparent 70%);">
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+      <div class="fade-in">
+        <p class="section-tag mb-4">What you get</p>
+        <div class="flex items-end gap-6 mb-4">
+          <h2 class="text-4xl md:text-5xl font-display font-bold text-white">Built for small businesses</h2>
+          <div class="divider mb-4 hidden sm:block"></div>
+        </div>
+        <p class="text-gray-DEFAULT max-w-xl mb-16 text-sm">Simple to use, fast for your visitors, and nothing for you
+          to maintain.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="card-base p-8 fade-in">
+          <div class="icon-chip mb-6"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg></div>
+          <h3 class="text-lg font-bold text-white mb-2">Fast pages</h3>
+          <p class="text-gray-DEFAULT text-sm">Every published page is saved as a finished web page, so visitors never
+            wait on a database.</p>
+        </div>
+        <div class="card-base p-8 fade-in" style="transition-delay: 0.06s;">
+          <div class="icon-chip mb-6"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m21 21-4.3-4.3" />
+            </svg></div>
+          <h3 class="text-lg font-bold text-white mb-2">Search-ready</h3>
+          <p class="text-gray-DEFAULT text-sm">Page titles, descriptions, a sitemap and social share previews are
+            handled for you.</p>
+        </div>
+        <div class="card-base p-8 fade-in" style="transition-delay: 0.12s;">
+          <div class="icon-chip mb-6"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg></div>
+          <h3 class="text-lg font-bold text-white mb-2">Drafts and preview</h3>
+          <p class="text-gray-DEFAULT text-sm">Work on a page as a draft and preview it. Nothing changes on your live
+            site until you publish.</p>
+        </div>
+        <div class="card-base p-8 fade-in">
+          <div class="icon-chip mb-6"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="9" cy="9" r="2" />
+              <path d="m21 15-5-5L5 21" />
+            </svg></div>
+          <h3 class="text-lg font-bold text-white mb-2">Your own photos</h3>
+          <p class="text-gray-DEFAULT text-sm">Upload images straight from your computer or phone into any section.
+          </p>
+        </div>
+        <div class="card-base p-8 fade-in" style="transition-delay: 0.06s;">
+          <div class="icon-chip mb-6"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" />
+            </svg></div>
+          <h3 class="text-lg font-bold text-white mb-2">Logins for your team</h3>
+          <p class="text-gray-DEFAULT text-sm">Owners manage settings and pages; editors can update and publish
+            content.</p>
+        </div>
+        <div class="card-base p-8 fade-in" style="transition-delay: 0.12s;">
+          <div class="icon-chip mb-6"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="11" width="16" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg></div>
+          <h3 class="text-lg font-bold text-white mb-2">Nothing to maintain</h3>
+          <p class="text-gray-DEFAULT text-sm">No plugins to update and no server to patch. We host it and keep it
+            running.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════ CTA ══════════════════════════ -->
+  <section class="pb-28 relative">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="card-featured relative overflow-hidden p-10 md:p-14 fade-in">
+        <div class="absolute inset-0 pointer-events-none"
+          style="background: radial-gradient(ellipse 60% 80% at 100% 0%, rgba(59,130,246,0.18) 0%, transparent 60%);">
+        </div>
+        <div class="grain"></div>
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+          <div>
+            <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-3">Want to edit your own site?</h2>
+            <p class="text-gray-DEFAULT text-sm max-w-lg">Carter CMS is included with the Standard package and can be
+              added to an existing site. Tell us about your project and we'll show you how it works.</p>
+          </div>
+          <div class="flex flex-wrap gap-4 shrink-0">
+            <a href="index.html#contact" class="btn-primary">Get a Quote</a>
+            <a href="pricing.html" class="btn-outline">View Pricing</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+  <footer class="py-10" style="background:#080c14; border-top:1px solid rgba(255,255,255,0.06);">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <span class="text-xs text-gray-DEFAULT">Carter Web Services</span>
+      <p class="text-xs text-center" style="color:#4a5a7a;">
+        <span class="bracket">&lt;</span> © <span id="year"></span> Carter Technologies LLC <span
+          class="bracket">/&gt;</span>
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <a href="terms.html" class="nav-link text-xs">Terms</a>
+        <a href="cancellation-policy.html" class="nav-link text-xs">Cancellation Policy</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ══════════════════════════ SCRIPTS ══════════════════════════ -->
+  <script>
+    // ── Navbar scroll ──────────────────────────────────────────────────────
+    const navbar = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+      navbar.classList.toggle("scrolled", window.scrollY > 40);
+    }, { passive: true });
+
+    // ── Mobile menu ────────────────────────────────────────────────────────
+    const toggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const lines = toggle.querySelectorAll(".hamburger-line");
+
+    toggle.addEventListener("click", () => {
+      const open = mobileMenu.classList.toggle("open");
+      lines[0].style.transform = open ? "translateY(8px) rotate(45deg)" : "";
+      lines[1].style.opacity = open ? "0" : "";
+      lines[2].style.transform = open ? "translateY(-8px) rotate(-45deg)" : "";
+    });
+
+    mobileMenu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      lines[0].style.transform = "";
+      lines[1].style.opacity = "";
+      lines[2].style.transform = "";
+    }));
+
+    // ── Footer year ────────────────────────────────────────────────────────
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // ── Fade-in observer ───────────────────────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add("visible"); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll(".fade-in").forEach(el => observer.observe(el));
+  </script>
+</body>
+
+</html>

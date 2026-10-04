@@ -1,7 +1,7 @@
 // Makes an existing Firebase Auth user a platform admin (full access to every site).
 // Usage: node set-admin.js you@example.com
-const { initializeApp, cert } = require("firebase-admin/lib/app");
-const { getAuth } = require("firebase-admin/lib/auth");
+const { initializeApp, cert } = require("firebase-admin/app");
+const { getAuth } = require("firebase-admin/auth");
 
 const email = process.argv[2];
 if (!email) {

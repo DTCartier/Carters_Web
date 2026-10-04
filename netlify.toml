@@ -1,0 +1,16 @@
+# cartertechsllc.com (repo root, no build step).
+# The Carter CMS demo deploys from carter-cms/ as its own Netlify site and reads
+# carter-cms/netlify.toml instead, so nothing here affects it.
+
+# carter-cms/ is source for that other site. Don't serve it from the business site.
+[[redirects]]
+  from = "/carter-cms"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/carter-cms/*"
+  to = "/404.html"
+  status = 404
+  force = true

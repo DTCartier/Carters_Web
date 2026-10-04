@@ -2,8 +2,9 @@
 // and prints a link they can use to set their password.
 // Usage: node add-member.js client@example.com site-id owner|editor
 const crypto = require("crypto");
-const admin = require("firebase-admin");
-const { FieldValue } = require("firebase-admin/firestore");
+const { initializeApp, cert } = require("firebase-admin/app");
+const { getAuth } = require("firebase-admin/auth");
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 
 const [email, siteId, role = "editor"] = process.argv.slice(2);
 if (!email || !siteId || !["owner", "editor"].includes(role)) {
@@ -11,9 +12,9 @@ if (!email || !siteId || !["owner", "editor"].includes(role)) {
   process.exit(1);
 }
 
-admin.initializeApp({ credential: admin.credential.cert(require("./service-account.json")) });
-const auth = admin.auth();
-const db = admin.firestore();
+initializeApp({ credential: cert(require("./service-account.json")) });
+const auth = getAuth();
+const db = getFirestore();
 
 (async () => {
   const site = await db.doc(`sites/${siteId}`).get();
