@@ -1,7 +1,7 @@
 # Carter CMS — starter
 
 A multi-site, block-based CMS for Carter Web Services, built on the stack you already run:
-Firebase (Auth, Firestore, Storage) for data, Netlify for hosting, Bootstrap 5.2 + vanilla JS for the UI.
+Firebase (Auth, Firestore, Storage) for data, Netlify for hosting, Bootstrap 5.3 + vanilla JS for the UI.
 No build step, no server to maintain.
 
 One Firebase project holds every client site. Each client site is its own Netlify site built from this
@@ -36,7 +36,7 @@ carter-cms/
 ├── public/                      ← Source files (the build copies these into dist/)
 │   ├── index.html               Page template (cms:* markers get filled at build time)
 │   ├── assets/css/site.css      Public theme (navy/teal, DM Sans + DM Serif Display)
-│   ├── bootstrap-5.2.0-dist/    Bootstrap 5.2.0 (path kept exactly)
+│   ├── bootstrap-5.3.8-dist/    Bootstrap 5.3.8 (path kept exactly)
 │   ├── cms/
 │   │   ├── firebase-config.js   ← paste your Firebase config + set SITE_ID
 │   │   ├── firebase.js          Firebase init

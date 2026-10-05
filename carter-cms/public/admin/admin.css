@@ -129,7 +129,7 @@ body.admin { font-family: var(--sans); background: var(--paper); color: var(--te
 .admin-toast.is-error { border-left-color: #F97066; }
 
 /* Login */
-.login-page { background: var(--ink); }
+body.admin.login-page { background: var(--ink); }
 .login-wrap { min-height: 100vh; display: grid; place-content: center; padding: 1.5rem; gap: 1.5rem; }
 .login-mark { text-align: center; margin: 0; font-size: 2.25rem; }
 .login-card { background: #fff; border-radius: .5rem; padding: 2.25rem; width: min(400px, 100vw - 3rem); }

@@ -465,7 +465,7 @@ function openPreview(blocks) {
   $("#preview-frame").srcdoc = `<!doctype html><html lang="en"><head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display&display=swap">
-    <link rel="stylesheet" href="${origin}/bootstrap-5.2.0-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${origin}/bootstrap-5.3.8-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="${origin}/assets/css/site.css">
     <style>:root{${themeCss(s.theme)}} a{pointer-events:none}</style></head>
     <body><header class="cms-header"><nav class="navbar navbar-expand navbar-dark"><div class="container">
