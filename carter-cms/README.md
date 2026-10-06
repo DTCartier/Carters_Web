@@ -122,15 +122,20 @@ Each new client repeats steps 7–9 on a new Netlify site from the same repo: on
 ## Data model
 
 `sites/{siteId}` — `name, tagline, domain, footer, nav: [{label, slug}], theme: {primary, accent}`
-`sites/{siteId}/pages/{pageId}` — `title, slug, status: draft|published, seo: {title, description}, blocks: [{id, type, data}], createdAt, updatedAt, updatedBy, publishedAt`
+`sites/{siteId}/pages/{pageId}` — `title, slug, status: draft|published, seo: {title, description}, blocks: [{id, type, data, style}], createdAt, updatedAt, updatedBy, publishedAt`. `style` holds the section's Design settings (`bg, bgColor, bgImage, overlay, text, spacing, align, width, anchor`); only changed settings are stored.
 `siteMembers/{siteId}` — `siteName, memberIds: [uid], roles: {uid: owner|editor}`
 `siteMembers/{siteId}/invites/{inviteId}` — `email, role, status: pending|accepted|revoked|replaced, siteName, createdBy, createdAt, expiresAt, acceptedBy, acceptedAt`. Server-only: the rules don't match this path, so only the portal functions read or write it.
 
 ## Adding a section type
 
 Add one entry to `BLOCKS` in `public/cms/blocks.js` with a `label`, `fields`
-(`text`, `textarea`, or `image`) and a `render(data)` function. The editor, preview and public
-site pick it up automatically. Always pass user text through `esc()` and links through `safeUrl()`.
+(`text`, `textarea`, `image`, `select` or `color`) and a `render(data, style)` function that wraps its
+HTML in `section("your-class", style, inner)`. The editor, preview and public site pick it up automatically,
+and the section gets the Design panel (background, text color, spacing, alignment, width, ID) for free.
+Always pass user text through `esc()` and links through `safeUrl()`.
+
+Design options live in `STYLE_FIELDS` in the same file. Each value is checked against its list and turned
+into a `cms-*` class (styled in `assets/css/site.css`), so clients never write raw CSS.
 
 ## Known limits
 

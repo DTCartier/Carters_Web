@@ -34,35 +34,77 @@ a { color: var(--cms-primary); text-underline-offset: .2em; }
 }
 .btn-cms:hover, .btn-cms:focus-visible { background: var(--cms-accent); color: var(--cms-ink); filter: brightness(1.08); }
 
+/* Section text colors. Each section reads these, so a Design background can flip them. */
+.cms-block { --sec-fg: var(--cms-text); --sec-muted: var(--cms-muted); color: var(--sec-fg); }
+
 /* Hero */
 .cms-hero {
   position: relative; isolation: isolate; overflow: hidden;
-  background: var(--cms-primary); color: #fff;
+  background: var(--cms-primary); --sec-fg: #fff; --sec-muted: rgba(255,255,255,.85);
   padding: clamp(4rem, 10vw, 8rem) 0;
 }
 .cms-hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .25; z-index: -1; }
 .cms-hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.05; max-width: 16ch; margin-bottom: 1.25rem; }
-.cms-hero p { font-size: 1.2rem; max-width: 52ch; color: rgba(255,255,255,.85); }
+.cms-hero p { font-size: 1.2rem; max-width: 52ch; color: var(--sec-muted); }
 .cms-hero .btn-cms { margin-top: .75rem; }
 
 /* Sections */
 .cms-section { padding: clamp(3rem, 6vw, 5rem) 0; }
-.cms-section + .cms-section { padding-top: 0; }
+/* Plain sections in a row share one gap. Sections with their own background or spacing keep full padding. */
+.cms-section:not(.cms-has-bg) + .cms-section:not(.cms-has-bg, .cms-pad-sm, .cms-pad-lg) { padding-top: 0; }
 .cms-prose { max-width: 70ch; }
 .cms-prose h2 { font-size: clamp(1.8rem, 3.5vw, 2.4rem); margin-bottom: 1rem; }
 .cms-prose p { font-size: 1.075rem; line-height: 1.7; }
 
 .cms-figure img { width: 100%; height: auto; border-radius: .5rem; }
-.cms-figure figcaption { margin-top: .6rem; color: var(--cms-muted); font-size: .95rem; }
+.cms-figure figcaption { margin-top: .6rem; color: var(--sec-muted, var(--cms-muted)); font-size: .95rem; }
 
 .cms-feature { border-top: 2px solid var(--cms-accent); padding-top: 1rem; height: 100%; }
 .cms-feature h3 { font-size: 1.4rem; margin-bottom: .4rem; }
-.cms-feature p { color: var(--cms-muted); margin: 0; }
+.cms-feature p { color: var(--sec-muted, var(--cms-muted)); margin: 0; }
 
 .cms-cta { background: var(--cms-paper); padding: clamp(3rem, 6vw, 4.5rem) 0; }
 .cms-cta-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.5rem; }
 .cms-cta h2 { font-size: clamp(1.8rem, 3.5vw, 2.4rem); margin-bottom: .4rem; }
-.cms-cta p { margin: 0; color: var(--cms-muted); max-width: 55ch; }
+.cms-cta p { margin: 0; color: var(--sec-muted, var(--cms-muted)); max-width: 55ch; }
+
+/* Section design settings (block.style, see section() in cms/blocks.js).
+   These come after the block rules so they override each block's built-in look. */
+.cms-bg-none    { background: #fff; }
+.cms-bg-light   { background: var(--cms-paper); }
+.cms-bg-primary { background: var(--cms-primary); }
+.cms-bg-accent  { background: var(--cms-accent); }
+.cms-bg-dark    { background: var(--cms-ink); }
+.cms-bg-custom  { background: var(--sec-bg); }
+.cms-bg-image   { background: var(--cms-ink); position: relative; isolation: isolate; overflow: hidden; }
+.cms-sec-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: .4; }
+.cms-overlay-light .cms-sec-bg  { opacity: .6; }
+.cms-overlay-strong .cms-sec-bg { opacity: .2; }
+
+.cms-block.cms-text-dark  { --sec-fg: var(--cms-text); --sec-muted: var(--cms-muted); }
+.cms-block.cms-text-light { --sec-fg: #fff; --sec-muted: rgba(255,255,255,.82); }
+/* Grey muted text loses contrast on colored backgrounds; tint the ink instead. */
+.cms-block.cms-has-bg.cms-text-dark:not(.cms-bg-none) { --sec-muted: rgba(13,27,42,.78); }
+.cms-text-light a:not(.btn) { color: #fff; }
+
+/* On the accent color, the accent button and rules would disappear. */
+.cms-bg-accent .btn-cms,
+.cms-bg-accent .btn-cms:hover,
+.cms-bg-accent .btn-cms:focus-visible { background: var(--cms-ink); color: #fff; }
+.cms-bg-accent .cms-feature { border-top-color: currentColor; }
+.cms-bg-accent :focus-visible { outline-color: var(--cms-ink); }
+
+.cms-block.cms-pad-sm { padding-block: clamp(2rem, 4vw, 3rem); }
+.cms-block.cms-pad-lg { padding-block: clamp(5rem, 11vw, 9rem); }
+
+.cms-align-center { text-align: center; }
+.cms-align-center :is(h1, p, .cms-prose) { margin-inline: auto; }
+.cms-align-center .cms-cta-inner { flex-direction: column; justify-content: center; }
+.cms-align-center .cms-cta p { margin-inline: auto; }
+.cms-align-center .row { justify-content: center; }
+
+.cms-w-narrow .container { max-width: 760px; }
+.cms-w-wide .container { max-width: none; padding-inline: clamp(1rem, 4vw, 3rem); }
 
 /* Footer */
 .cms-footer { background: var(--cms-ink); color: rgba(255,255,255,.72); padding: 2.5rem 0; font-size: .95rem; }

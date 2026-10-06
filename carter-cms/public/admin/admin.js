@@ -6,7 +6,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { app, db } from "../cms/firebase.js";
-import { BLOCKS, newBlock, renderBlocks, renderNavItems, footerText, esc, safeUrl, themeCss } from "../cms/blocks.js";
+import {
+  BLOCKS, STYLE_FIELDS, newBlock, renderBlocks, renderNavItems, footerText, esc, safeUrl, themeCss, customBg, styleSummary
+} from "../cms/blocks.js";
 import { PORTAL_URL } from "../cms/firebase-config.js";
 
 const auth = getAuth(app);
@@ -221,22 +223,39 @@ async function viewPages() {
 
 /* ---------- Page editor ---------- */
 
-function fieldHtml(b, f) {
-  const id = `f-${b.id}-${f.key}`;
-  const v = b.data[f.key] ?? "";
-  const attrs = `id="${id}" data-block="${esc(b.id)}" data-key="${esc(f.key)}" placeholder="${esc(f.placeholder || "")}"${f.help ? ` aria-describedby="${id}-help"` : ""}`;
+// scope is "data" for a block's content fields or "style" for its Design settings.
+function fieldHtml(b, f, scope = "data") {
+  const id = `f-${scope}-${b.id}-${f.key}`;
+  const v = b[scope][f.key] ?? "";
+  const keys = `data-block="${esc(b.id)}" data-scope="${scope}" data-key="${esc(f.key)}"`;
+  const attrs = `id="${id}" ${keys} placeholder="${esc(f.placeholder || "")}"${f.help ? ` aria-describedby="${id}-help"` : ""}`;
   let input;
   if (f.type === "textarea") {
     input = `<textarea class="form-control" rows="${f.rows || 4}" ${attrs}>${esc(v)}</textarea>`;
   } else if (f.type === "image") {
     input = `<div class="image-field">
       <input class="form-control" type="text" ${attrs} value="${esc(v)}">
-      <label class="btn btn-quiet upload-btn">Upload<input type="file" accept="image/*" class="visually-hidden" data-upload="${esc(b.id)}" data-key="${esc(f.key)}"></label>
+      <label class="btn btn-quiet upload-btn">Upload<input type="file" accept="image/*" class="visually-hidden" data-upload="${esc(b.id)}" data-scope="${scope}" data-key="${esc(f.key)}"></label>
     </div>${safeUrl(v) ? `<img class="image-thumb" src="${esc(safeUrl(v))}" alt="">` : ""}`;
+  } else if (f.type === "select") {
+    input = `<select class="form-select" ${attrs}>${f.options.map(([val, label]) =>
+      `<option value="${esc(val)}"${val === v ? " selected" : ""}>${esc(label)}</option>`).join("")}</select>`;
+  } else if (f.type === "color") {
+    input = `<input class="form-control form-control-color" type="color" ${attrs} value="${esc(scope === "style" ? customBg(b.style) : v || f.default)}">`;
   } else {
     input = `<input class="form-control" type="text" ${attrs} value="${esc(v)}">`;
   }
-  return `<div class="mb-3"><label class="form-label" for="${id}">${esc(f.label)}</label>${input}${f.help ? `<div class="form-text" id="${id}-help">${esc(f.help)}</div>` : ""}</div>`;
+  // Fields that only apply to one choice of another field (e.g. the color picker for "Custom color").
+  const when = f.when ? ` data-when="${esc(f.when[0])}" data-is="${esc(f.when[1])}"${b[scope][f.when[0]] === f.when[1] ? "" : " hidden"}` : "";
+  return `<div class="mb-3${f.wide ? " field-wide" : ""}"${when}><label class="form-label" for="${id}">${esc(f.label)}</label>${input}${f.help ? `<div class="form-text" id="${id}-help">${esc(f.help)}</div>` : ""}</div>`;
+}
+
+function designPanel(b, open) {
+  const summary = styleSummary(b.style);
+  return `<details class="block-design" data-design="${esc(b.id)}"${open ? " open" : ""}>
+    <summary>Design <span class="design-summary">${esc(summary || "Default")}</span></summary>
+    <div class="design-grid">${STYLE_FIELDS.map(f => fieldHtml(b, f, "style")).join("")}</div>
+  </details>`;
 }
 
 async function viewEditor(pageId) {
@@ -255,7 +274,9 @@ async function viewEditor(pageId) {
     slug: page.slug || "",
     seo: { title: page.seo?.title || "", description: page.seo?.description || "" },
     blocks: pageId
-      ? (page.blocks || []).map(b => ({ id: b.id || newBlock("text").id, type: b.type, data: { ...(b.data || {}) } }))
+      ? (page.blocks || []).map(b => ({
+          id: b.id || newBlock("text").id, type: b.type, data: { ...(b.data || {}) }, style: { ...(b.style || {}) }
+        }))
       : [newBlock("hero")]
   };
   const isLive = page.status === "published";
@@ -322,6 +343,7 @@ async function viewEditor(pageId) {
       return;
     }
     const last = draft.blocks.length - 1;
+    const openDesign = new Set([...wrap.querySelectorAll("details[data-design][open]")].map(d => d.dataset.design));
     wrap.innerHTML = draft.blocks.map((b, i) => {
       const def = BLOCKS[b.type];
       if (!def) {
@@ -337,6 +359,7 @@ async function viewEditor(pageId) {
           </div>
         </header>
         <div class="block-body">${def.fields.map(f => fieldHtml(b, f)).join("")}</div>
+        ${designPanel(b, openDesign.has(b.id))}
       </section>`;
     }).join("");
   }
@@ -356,7 +379,9 @@ async function viewEditor(pageId) {
       $("#seo-count").textContent = `${t.value.length} / 160 characters`;
     } else if (t.dataset.block && !t.dataset.upload) {
       const b = draft.blocks.find(x => x.id === t.dataset.block);
-      if (b) b.data[t.dataset.key] = t.value;
+      if (!b) return;
+      b[t.dataset.scope][t.dataset.key] = t.value;
+      if (t.dataset.scope === "style") syncDesign(b, t.closest(".block-design"));
     } else return;
     markDirty();
   };
@@ -364,6 +389,11 @@ async function viewEditor(pageId) {
   view.onchange = async e => {
     const t = e.target;
     if (t.id === "f-slug") { draft.slug = t.value = slugify(t.value); return; }
+    if (t.dataset.scope === "style" && t.dataset.key === "anchor") {
+      const b = draft.blocks.find(x => x.id === t.dataset.block);
+      if (b) b.style.anchor = t.value = slugify(t.value);
+      return;
+    }
     if (t.dataset.upload && t.files?.[0]) await uploadImage(t);
   };
 
@@ -402,6 +432,12 @@ async function viewEditor(pageId) {
     }
   };
 
+  // After a Design change: show only the fields that apply, and refresh the summary line.
+  function syncDesign(b, panel) {
+    panel.querySelectorAll("[data-when]").forEach(el => { el.hidden = b.style[el.dataset.when] !== el.dataset.is; });
+    $(".design-summary", panel).textContent = styleSummary(b.style) || "Default";
+  }
+
   async function uploadImage(input) {
     const file = input.files[0];
     if (!file.type.startsWith("image/")) return toast("Choose an image file: JPG, PNG, WebP or GIF.", "error");
@@ -412,7 +448,7 @@ async function viewEditor(pageId) {
       const path = `sites/${state.siteId}/media/${Date.now()}-${file.name.replace(/[^\w.-]+/g, "-")}`;
       const r = storageRef(getStorage(app), path);
       await uploadBytes(r, file, { contentType: file.type });
-      b.data[input.dataset.key] = await getDownloadURL(r);
+      b[input.dataset.scope][input.dataset.key] = await getDownloadURL(r);
       markDirty(); renderBlockList(); toast("Image uploaded");
     } catch (err) {
       console.error(err);
@@ -437,7 +473,9 @@ async function viewEditor(pageId) {
       const payload = {
         title, slug, status,
         seo: { title: draft.seo.title.trim(), description: draft.seo.description.trim() },
-        blocks: draft.blocks.map(({ id, type, data }) => ({ id, type, data })),
+        // Defaults are stored as absent, so pages only carry the settings someone changed.
+        blocks: draft.blocks.map(({ id, type, data, style }) =>
+          ({ id, type, data, style: Object.fromEntries(Object.entries(style).filter(([, v]) => v !== "")) })),
         updatedAt: serverTimestamp(),
         updatedBy: state.user.uid
       };
