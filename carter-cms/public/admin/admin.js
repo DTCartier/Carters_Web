@@ -1,4 +1,4 @@
-// Carter CMS admin: auth guard, site switching, pages list, block editor, site settings, new-site setup.
+// Carter CMS admin: auth guard, site switching, pages list, block editor, site settings, team, new-site setup.
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc,
@@ -7,6 +7,7 @@ import {
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { app, db } from "../cms/firebase.js";
 import { BLOCKS, newBlock, renderBlocks, renderNavItems, footerText, esc, safeUrl, themeCss } from "../cms/blocks.js";
+import { PORTAL_URL } from "../cms/firebase-config.js";
 
 const auth = getAuth(app);
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -125,6 +126,7 @@ async function selectSite(id) {
   const domain = state.site?.domain?.trim();
   $("#view-site").href = domain ? (/^https?:\/\//.test(domain) ? domain : `https://${domain}`) : "/";
   $("#site-role").textContent = state.platformAdmin ? "Platform admin" : state.role === "owner" ? "Site owner" : state.role ? "Editor" : "";
+  $("#nav-team").hidden = !(id && canOwn());
 }
 
 function renderSiteSwitch() {
@@ -175,6 +177,7 @@ async function route() {
   if (section === "new-site") return state.platformAdmin ? viewNewSite() : go("#/pages");
   if (!state.siteId) return viewNoSites();
   if (section === "settings") return viewSettings();
+  if (section === "team") return canOwn() ? viewTeam() : go("#/pages");
   if (section === "pages" && id) return viewEditor(id === "new" ? null : id);
   return viewPages();
 }
@@ -182,7 +185,7 @@ async function route() {
 function viewNoSites() {
   view.innerHTML = head("Welcome") + (state.platformAdmin
     ? `<div class="panel empty"><h2>Create your first site</h2><p>A site holds its own pages, navigation and colors. You can add clients as owners or editors later.</p><a class="btn btn-brand" href="#/new-site">Create a site</a></div>`
-    : `<div class="panel empty"><h2>No sites yet</h2><p>Your account isn't connected to a site. Ask your site administrator to add you.</p></div>`);
+    : `<div class="panel empty"><h2>No sites yet</h2><p>Your account isn't connected to a site. Ask your site owner to send you an invite, then open the link in it.</p></div>`);
 }
 
 /* ---------- Pages list ---------- */
@@ -562,6 +565,168 @@ function viewSettings() {
       btn.disabled = false;
     }
   };
+}
+
+/* ---------- Team (owners) ---------- */
+
+// Team changes go through the portal's functions: browsers can't write siteMembers or invites.
+async function teamCall(action, data = {}) {
+  const res = await fetch(`${PORTAL_URL}/.netlify/functions/team`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${await state.user.getIdToken()}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ siteId: state.siteId, action, ...data })
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.error || `The team service isn't reachable (HTTP ${res.status}).`);
+  return body;
+}
+
+const inviteLink = id =>
+  `${PORTAL_URL}/admin/accept.html?site=${encodeURIComponent(state.siteId)}&invite=${encodeURIComponent(id)}`;
+const roleLabel = r => (r === "owner" ? "Owner" : "Editor");
+
+async function copyText(text, input) {
+  try { await navigator.clipboard.writeText(text); toast("Invite link copied"); }
+  catch { input?.select(); toast("Press Ctrl+C to copy the link.", "error"); }
+}
+
+async function viewTeam() {
+  view.innerHTML = head("Team") + `
+    <form class="panel p-4 mb-4" id="invite-form" novalidate>
+      <h2 class="h6">Invite someone</h2>
+      <div class="row g-3 align-items-end">
+        <div class="col-md-6"><label class="form-label" for="i-email">Email</label>
+          <input class="form-control" id="i-email" name="email" type="email" required autocomplete="off" spellcheck="false"></div>
+        <div class="col-sm-6 col-md-3"><label class="form-label" for="i-role">Role</label>
+          <select class="form-select" id="i-role" name="role"><option value="editor">Editor</option><option value="owner">Owner</option></select></div>
+        <div class="col-sm-6 col-md-3"><button class="btn btn-brand w-100" type="submit">Create invite</button></div>
+      </div>
+      <p class="form-text mt-2 mb-0">Editors edit and publish pages. Owners can also change site settings and manage the team. Invites expire after 7 days.</p>
+      <div id="invite-result"></div>
+    </form>
+    <div class="panel mb-4" id="members-panel"><p class="text-muted p-4 mb-0">Loading team…</p></div>
+    <div id="invites-panel"></div>`;
+
+  let data = { members: [], invites: [] };
+
+  const draw = () => {
+    const me = state.user.uid;
+    $("#members-panel").innerHTML = `<div class="table-responsive"><table class="table admin-table align-middle mb-0">
+      <thead><tr><th scope="col">Member</th><th scope="col">Role</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+      <tbody>${data.members.map(m => `<tr>
+        <td>${esc(m.email)}${m.uid === me ? ` <span class="team-you">You</span>` : ""}</td>
+        <td><label class="visually-hidden" for="r-${esc(m.uid)}">Role for ${esc(m.email)}</label>
+          <select class="form-select form-select-sm team-role" id="r-${esc(m.uid)}" data-role="${esc(m.uid)}">
+            ${["editor", "owner"].map(r => `<option value="${r}"${r === m.role ? " selected" : ""}>${roleLabel(r)}</option>`).join("")}
+          </select></td>
+        <td class="text-end"><button type="button" class="btn btn-sm btn-quiet" data-remove="${esc(m.uid)}">Remove<span class="visually-hidden"> ${esc(m.email)}</span></button></td>
+      </tr>`).join("") || `<tr><td colspan="3" class="text-muted">No members yet.</td></tr>`}</tbody></table></div>`;
+
+    $("#invites-panel").innerHTML = data.invites.length ? `<div class="panel">
+      <h2 class="h6 px-4 pt-4">Pending invites</h2>
+      <div class="table-responsive"><table class="table admin-table align-middle mb-0">
+      <thead><tr><th scope="col">Email</th><th scope="col">Role</th><th scope="col">Expires</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+      <tbody>${data.invites.map(i => `<tr>
+        <td>${esc(i.email)}</td><td>${roleLabel(i.role)}</td>
+        <td>${new Date(i.expiresAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</td>
+        <td class="text-end text-nowrap">
+          <button type="button" class="btn btn-sm btn-quiet" data-copy="${esc(i.id)}">Copy link</button>
+          <button type="button" class="btn btn-sm btn-quiet" data-revoke="${esc(i.id)}">Revoke<span class="visually-hidden"> invite for ${esc(i.email)}</span></button>
+        </td></tr>`).join("")}</tbody></table></div></div>` : "";
+  };
+
+  const load = async () => {
+    try {
+      data = await teamCall("list");
+      draw();
+    } catch (err) {
+      console.error(err);
+      $("#members-panel").innerHTML = `<p class="p-4 mb-0">The team didn't load. ${esc(err.message)}</p>`;
+    }
+  };
+
+  // After changing your own access, reload your sites: you may no longer be an owner here.
+  const afterSelfChange = async () => {
+    await loadSites(state.siteId);
+    if (!canOwn()) { toast("Your access changed."); go("#/pages"); return true; }
+    return false;
+  };
+
+  view.onsubmit = async e => {
+    e.preventDefault();
+    const f = e.target;
+    const email = f.email.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast("Enter a valid email address.", "error"); f.email.focus(); return; }
+    const btn = f.querySelector("[type=submit]");
+    btn.disabled = true;
+    try {
+      const { invite } = await teamCall("invite", { email, role: f.role.value });
+      const link = inviteLink(invite.id);
+      $("#invite-result").innerHTML = `<div class="invite-link mt-3">
+        <p class="mb-2">Invite created. Send this link to <strong>${esc(invite.email)}</strong>. Anyone can open it, but only that email address can accept it.</p>
+        <div class="input-group"><input class="form-control" id="invite-url" readonly value="${esc(link)}" aria-label="Invite link">
+          <button class="btn btn-brand" type="button" data-copy-new>Copy link</button></div></div>`;
+      f.email.value = "";
+      await load();
+    } catch (err) {
+      toast(err.message, "error");
+    } finally {
+      btn.disabled = false;
+    }
+  };
+
+  view.onclick = async e => {
+    const t = e.target.closest("button");
+    if (!t) return;
+    if (t.hasAttribute("data-copy-new")) return copyText($("#invite-url").value, $("#invite-url"));
+    if (t.dataset.copy) return copyText(inviteLink(t.dataset.copy));
+    if (t.dataset.revoke) {
+      const inv = data.invites.find(i => i.id === t.dataset.revoke);
+      if (!confirm(`Revoke the invite for ${inv?.email}? The link will stop working.`)) return;
+      t.disabled = true;
+      try {
+        await teamCall("revoke", { inviteId: t.dataset.revoke });
+        toast("Invite revoked");
+        // Don't leave a dead link on screen to be copied.
+        if ($("#invite-url")?.value.includes(`invite=${encodeURIComponent(t.dataset.revoke)}`)) $("#invite-result").innerHTML = "";
+        await load();
+      }
+      catch (err) { toast(err.message, "error"); t.disabled = false; }
+    }
+    if (t.dataset.remove) {
+      const uid = t.dataset.remove;
+      const m = data.members.find(x => x.uid === uid);
+      const self = uid === state.user.uid;
+      if (!confirm(self ? "Remove yourself from this site? You'll lose access to it." : `Remove ${m?.email} from this site?`)) return;
+      t.disabled = true;
+      try {
+        await teamCall("remove", { uid });
+        toast(self ? "You left the site" : `${m?.email} removed`);
+        if (self && await afterSelfChange()) return;
+        await load();
+      } catch (err) { toast(err.message, "error"); t.disabled = false; }
+    }
+  };
+
+  view.onchange = async e => {
+    const sel = e.target.closest("select[data-role]");
+    if (!sel) return;
+    const uid = sel.dataset.role;
+    const m = data.members.find(x => x.uid === uid);
+    sel.disabled = true;
+    try {
+      await teamCall("setRole", { uid, role: sel.value });
+      toast(`${m?.email} is now ${sel.value === "owner" ? "an owner" : "an editor"}`);
+      if (uid === state.user.uid && await afterSelfChange()) return;
+      await load();
+    } catch (err) {
+      toast(err.message, "error");
+      sel.value = m?.role || "editor";
+      sel.disabled = false;
+    }
+  };
+
+  await load();
 }
 
 /* ---------- New site (platform admin) ---------- */

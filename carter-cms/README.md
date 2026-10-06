@@ -27,26 +27,31 @@ get finished pages with no database call.
 
 ```
 carter-cms/
-├── package.json                 Marks the project as ES modules (no dependencies)
+├── package.json                 ES modules; firebase-admin for the portal functions
 ├── build/
 │   ├── prerender.mjs            Netlify build step: published pages → static HTML, sitemap, robots
 │   └── firestore-rest.mjs       Tiny Firestore reader (no SDK, no service account)
-├── netlify/functions/
-│   └── rebuild.mjs              Verifies the editor, then triggers the build hook
+├── netlify/
+│   ├── functions/
+│   │   ├── rebuild.mjs          Verifies the editor, then triggers the build hook
+│   │   ├── team.mjs             Portal only: owners list/invite/revoke, change roles, remove members
+│   │   └── accept-invite.mjs    Portal only: shows an invite, adds a verified invitee to the site
+│   └── lib/admin.mjs            Firebase Admin setup + helpers for the portal functions
 ├── public/                      ← Source files (the build copies these into dist/)
 │   ├── index.html               Page template (cms:* markers get filled at build time)
 │   ├── assets/css/site.css      Public theme (navy/teal, DM Sans + DM Serif Display)
 │   ├── bootstrap-5.3.8-dist/    Bootstrap 5.3.8 (path kept exactly)
 │   ├── cms/
-│   │   ├── firebase-config.js   ← paste your Firebase config + set SITE_ID
+│   │   ├── firebase-config.js   ← paste your Firebase config + set SITE_ID and PORTAL_URL
 │   │   ├── firebase.js          Firebase init
 │   │   ├── blocks.js            Section types: editor fields + public HTML, in one place
 │   │   └── cms-client.js        Public renderer
 │   └── admin/
 │       ├── login.html           Sign in + password reset
+│       ├── accept.html          Invite link: create account or sign in, verify email, join the site
 │       ├── index.html           Dashboard shell
 │       ├── admin.css            Admin styles
-│       └── admin.js             Pages, block editor, preview, settings, new site
+│       └── admin.js             Pages, block editor, preview, settings, team, new site
 ├── firestore.rules              Who can read/write what
 ├── storage.rules                Image upload rules (5 MB, images only)
 ├── firebase.json                For `firebase deploy --only firestore,storage`
@@ -86,10 +91,23 @@ carter-cms/
      | `NETLIFY_BUILD_HOOK` | the hook URL (keep it private) |
      | `SITE_URL` | optional; `https://clientdomain.com` once the domain is connected |
 
+   - **Portal site only** (the one at `PORTAL_URL`, e.g. portal.cartertechsllc.com), also add the two
+     service-account values that the team and invite functions use. Copy them from
+     `scripts/service-account.json`; never put them on client sites or in the repo:
+
+     | Variable | Value |
+     |---|---|
+     | `FIREBASE_CLIENT_EMAIL` | `client_email` from the JSON |
+     | `FIREBASE_PRIVATE_KEY` | `private_key` from the JSON, pasted exactly as it appears in the JSON (one line with `\n` in it) |
+
+     Add the portal domain under Firebase → Authentication → Settings → Authorized domains, so
+     sign-up and email verification work there.
+
    - Trigger a deploy. In `/admin` → Site settings, set Domain to the site's address
      (the `.netlify.app` one works until the real domain is connected).
-9. **Add the client.** `node add-member.js owner@clientsite.com their-site-id owner`
-   prints a password-set link for new accounts.
+9. **Add the client.** In `/admin` → **Team**, invite their email as Owner and send them the link.
+   They create their own login, verify their email and join; then they can invite their own staff.
+   (`node add-member.js owner@clientsite.com their-site-id owner` still works as a manual fallback.)
 
 Each new client repeats steps 7–9 on a new Netlify site from the same repo: only the env vars differ.
 
@@ -98,7 +116,7 @@ Each new client repeats steps 7–9 on a new Netlify site from the same repo: on
 | Role | Can do |
 |---|---|
 | Platform admin (you) | Everything on every site; create sites |
-| Owner | Edit and publish pages, delete pages, change site settings |
+| Owner | Edit and publish pages, delete pages, change site settings, invite and manage the team |
 | Editor | Edit and publish pages |
 
 ## Data model
@@ -106,6 +124,7 @@ Each new client repeats steps 7–9 on a new Netlify site from the same repo: on
 `sites/{siteId}` — `name, tagline, domain, footer, nav: [{label, slug}], theme: {primary, accent}`
 `sites/{siteId}/pages/{pageId}` — `title, slug, status: draft|published, seo: {title, description}, blocks: [{id, type, data}], createdAt, updatedAt, updatedBy, publishedAt`
 `siteMembers/{siteId}` — `siteName, memberIds: [uid], roles: {uid: owner|editor}`
+`siteMembers/{siteId}/invites/{inviteId}` — `email, role, status: pending|accepted|revoked|replaced, siteName, createdBy, createdAt, expiresAt, acceptedBy, acceptedAt`. Server-only: the rules don't match this path, so only the portal functions read or write it.
 
 ## Adding a section type
 
@@ -134,6 +153,6 @@ The build output in `dist/` is plain static files, so it runs on any host. What 
 1. ~~Real HTML for search engines~~ Done: prerendered pages, sitemap, canonical and Open Graph tags.
 2. **Per-client themes.** Each client gets their own CSS and optional custom section types on top of the shared core.
 3. **Locked layouts.** A client role that can edit text and images but not add, remove or reorder sections.
-4. **Onboarding from the admin.** New client → pick a starter template → invite by email (replaces `add-member.js`).
+4. **Onboarding from the admin.** New client → pick a starter template → invite (invites done; templates and sending the email automatically are next).
 5. **One shared copy of the CMS core** so fixes reach every client site at once.
 6. **WHMCS provisioning** once client hosting moves to NameHero.

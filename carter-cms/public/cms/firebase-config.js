@@ -12,3 +12,11 @@ export const firebaseConfig = {
 // Which site this deployment renders. One Firebase project holds many client sites;
 // each Netlify deploy of /public points at one of them.
 export const SITE_ID = "test";
+
+// The Netlify site that runs the team and invite functions (it holds the service-account key).
+// Every site's admin sends invites and team changes there, and invite links open there.
+// On localhost the dev server serves those functions itself.
+const host = globalThis.location?.hostname;
+export const PORTAL_URL = host === "localhost" || host === "127.0.0.1"
+  ? globalThis.location.origin
+  : "https://portal.cartertechsllc.com";

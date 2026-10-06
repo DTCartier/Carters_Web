@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Accept invite | Carter CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display&display=swap">
+  <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin login-page">
+  <main class="login-wrap">
+    <p class="admin-mark login-mark">Carter <span>CMS</span></p>
+    <div class="login-card" id="card" aria-live="polite">
+      <p class="text-muted mb-0">Checking your invite…</p>
+    </div>
+  </main>
+
+  <script type="module">
+    import {
+      getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+      sendEmailVerification, sendPasswordResetEmail, signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { app } from "../cms/firebase.js";
+    import { PORTAL_URL } from "../cms/firebase-config.js";
+    import { esc } from "../cms/blocks.js";
+
+    const auth = getAuth(app);
+    const card = document.getElementById("card");
+    const params = new URLSearchParams(location.search);
+    const siteId = params.get("site") || "";
+    const inviteId = params.get("invite") || "";
+    const roleName = r => (r === "owner" ? "an owner" : "an editor");
+
+    let invite = null;            // { status, siteName, email, role }
+    let mode = "signup";          // or "signin", when signed out
+    let note = null;              // { text, ok } shown under the current form
+    let busy = false;
+
+    const authMessages = {
+      "auth/email-already-in-use": "You already have an account with this email. Sign in to accept the invite.",
+      "auth/weak-password": "Choose a stronger password: at least 8 characters.",
+      "auth/password-does-not-meet-requirements": "That password doesn't meet the requirements. Use at least 8 characters with a mix of letters and numbers.",
+      "auth/invalid-credential": "That password doesn't match. Try again or reset your password.",
+      "auth/too-many-requests": "Too many attempts. Wait a few minutes and try again.",
+      "auth/network-request-failed": "Can't reach the server. Check your connection and try again."
+    };
+
+    async function callInvite(action, idToken) {
+      const res = await fetch(`${PORTAL_URL}/.netlify/functions/accept-invite`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
+        body: JSON.stringify({ siteId, inviteId, action })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "We couldn't check this invite. Try again in a minute.");
+      return data;
+    }
+
+    const noteHtml = () => note
+      ? `<p class="login-msg${note.ok ? " is-ok" : ""}" role="alert">${esc(note.text)}</p>` : "";
+
+    const summary = () =>
+      `<p class="invite-summary">You're invited to edit <strong>${esc(invite.siteName)}</strong> as ${roleName(invite.role)}.</p>`;
+
+    function render() {
+      if (!invite) return;
+      const user = auth.currentUser;
+
+      if (invite.status !== "pending") {
+        const why = invite.status === "accepted"
+          ? "This invite has already been used. If it was yours, sign in to start editing."
+          : `This invite is ${invite.status}. Ask the person who invited you to send a new one.`;
+        card.innerHTML = `<h1>Invite unavailable</h1><p>${esc(why)}</p><a class="btn btn-brand w-100" href="login.html">Go to sign in</a>`;
+        return;
+      }
+
+      if (!user) {
+        const signup = mode === "signup";
+        // Redraws replace the form; keep what was typed so an error doesn't wipe the passwords.
+        const typed = ["password", "confirm"].map(id => [id, document.getElementById(id)?.value || ""]);
+        card.innerHTML = `<h1>${signup ? "Create your account" : "Sign in to accept"}</h1>${summary()}
+          <form id="auth-form" novalidate>
+            <div class="mb-3"><label class="form-label" for="email">Email</label>
+              <input class="form-control" id="email" type="email" value="${esc(invite.email)}" readonly autocomplete="username"></div>
+            <div class="mb-3"><label class="form-label" for="password">Password</label>
+              <input class="form-control" id="password" type="password" required minlength="8"
+                autocomplete="${signup ? "new-password" : "current-password"}"${signup ? ` aria-describedby="pw-help"` : ""}>
+              ${signup ? `<div class="form-text" id="pw-help">At least 8 characters.</div>` : ""}</div>
+            ${signup ? `<div class="mb-3"><label class="form-label" for="confirm">Confirm password</label>
+              <input class="form-control" id="confirm" type="password" required autocomplete="new-password"></div>` : ""}
+            ${noteHtml()}
+            <button class="btn btn-brand w-100" type="submit"${busy ? " disabled" : ""}>${signup ? "Create account" : "Sign in"}</button>
+          </form>
+          ${signup ? "" : `<button class="btn btn-link login-reset" type="button" id="reset">Forgot password?</button>`}
+          <p class="login-switch">${signup ? "Already have an account?" : "New to Carter CMS?"}
+            <button class="btn btn-link" type="button" id="switch">${signup ? "Sign in" : "Create an account"}</button></p>`;
+        typed.forEach(([id, v]) => { const el = document.getElementById(id); if (el) el.value = v; });
+        const pw = document.getElementById("password"), confirm = document.getElementById("confirm");
+        (pw.value && confirm && !confirm.value ? confirm : pw).focus();
+        return;
+      }
+
+      if (user.email.toLowerCase() !== invite.email) {
+        card.innerHTML = `<h1>Wrong account</h1>
+          <p>You're signed in as <strong>${esc(user.email)}</strong>, but this invite is for <strong>${esc(invite.email)}</strong>.</p>
+          <button class="btn btn-brand w-100" type="button" id="sign-out">Sign out and continue</button>`;
+        return;
+      }
+
+      if (!user.emailVerified) {
+        card.innerHTML = `<h1>Verify your email</h1>${summary()}
+          <p>We sent a link to <strong>${esc(invite.email)}</strong>. Open it to confirm this is your address, then come back here.</p>
+          ${noteHtml()}
+          <button class="btn btn-brand w-100" type="button" id="check"${busy ? " disabled" : ""}>I've verified my email</button>
+          <button class="btn btn-link login-reset" type="button" id="resend">Send the link again</button>`;
+        return;
+      }
+
+      card.innerHTML = `<h1>Join ${esc(invite.siteName)}</h1>${summary()}
+        ${noteHtml()}
+        <button class="btn btn-brand w-100" type="button" id="accept"${busy ? " disabled" : ""}>Accept invite</button>`;
+    }
+
+    const verifyLink = () => sendEmailVerification(auth.currentUser, { url: location.href });
+
+    async function run(task) {
+      busy = true; note = null; render();
+      try { await task(); } catch (err) {
+        note = { text: authMessages[err.code] || err.message || "Something went wrong. Try again." };
+        if (err.code === "auth/email-already-in-use") mode = "signin";
+      }
+      busy = false; render();
+    }
+
+    card.addEventListener("submit", e => {
+      e.preventDefault();
+      const password = document.getElementById("password").value;
+      if (mode === "signup") {
+        const confirm = document.getElementById("confirm").value;
+        if (password.length < 8) { note = { text: "Use at least 8 characters for your password." }; render(); return; }
+        if (password !== confirm) { note = { text: "The passwords don't match." }; render(); return; }
+        run(async () => {
+          await createUserWithEmailAndPassword(auth, invite.email, password);
+          await verifyLink();
+          note = { text: `Account created. Check ${invite.email} for the verification link.`, ok: true };
+        });
+      } else {
+        run(() => signInWithEmailAndPassword(auth, invite.email, password));
+      }
+    });
+
+    card.addEventListener("click", e => {
+      const id = e.target.id;
+      if (id === "switch") { mode = mode === "signup" ? "signin" : "signup"; note = null; render(); }
+      if (id === "sign-out") signOut(auth);
+      if (id === "reset") run(async () => {
+        await sendPasswordResetEmail(auth, invite.email);
+        note = { text: `A reset link is on its way to ${invite.email}.`, ok: true };
+      });
+      if (id === "resend") run(async () => {
+        await verifyLink();
+        note = { text: "Sent. The newest link is the one that works.", ok: true };
+      });
+      if (id === "check") run(async () => {
+        await auth.currentUser.reload();
+        if (!auth.currentUser.emailVerified) throw new Error("Not verified yet. Open the link in the email, then try again.");
+        await auth.currentUser.getIdToken(true);   // pick up email_verified in the token
+      });
+      if (id === "accept") run(async () => {
+        const res = await callInvite("accept", await auth.currentUser.getIdToken(true));
+        try { localStorage.setItem("cms.siteId", res.siteId); } catch { /* storage unavailable */ }
+        location.replace("./");
+      });
+    });
+
+    try {
+      invite = await callInvite("peek");
+    } catch (err) {
+      card.innerHTML = `<h1>Invite unavailable</h1><p>${esc(err.message)}</p><a class="btn btn-brand w-100" href="login.html">Go to sign in</a>`;
+    }
+    onAuthStateChanged(auth, () => { note = busy ? note : null; render(); });
+  </script>
+</body>
+</html>

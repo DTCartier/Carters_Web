@@ -3,10 +3,13 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
 
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
+  # Loaded from node_modules at runtime instead of bundled; it ships files esbuild can't inline.
+  external_node_modules = ["firebase-admin"]
 
 # No catch-all redirect: every published page is a real file (/about → about.html),
 # and anything else gets dist/404.html with a true 404 status.

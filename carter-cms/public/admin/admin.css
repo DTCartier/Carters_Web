@@ -124,7 +124,8 @@ body.admin { font-family: var(--sans); background: var(--paper); color: var(--te
 .preview-frame { width: 100%; height: 72vh; border: 1px solid var(--line); border-radius: .375rem; background: #fff; transition: width .2s ease; }
 
 /* Toasts */
-.admin-toasts { position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 2000; display: flex; flex-direction: column; gap: .5rem; }
+/* Click-through: toasts often sit over table buttons in the bottom-right corner. */
+.admin-toasts { position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 2000; display: flex; flex-direction: column; gap: .5rem; pointer-events: none; }
 .admin-toast { background: var(--ink); color: #fff; padding: .75rem 1rem; border-radius: .375rem; border-left: 3px solid var(--accent); max-width: 360px; font-size: .9375rem; }
 .admin-toast.is-error { border-left-color: #F97066; }
 
@@ -137,6 +138,12 @@ body.admin.login-page { background: var(--ink); }
 .login-msg { font-size: .9375rem; color: var(--danger); }
 .login-msg.is-ok { color: var(--accent-deep); }
 .login-reset { display: block; margin: .75rem auto 0; color: var(--accent-deep); font-size: .9375rem; text-decoration: none; }
+.login-card .form-control[readonly] { background: var(--paper); color: var(--muted); }
+.invite-summary { background: var(--paper); border-left: 3px solid var(--accent); border-radius: .25rem; padding: .75rem 1rem; margin-bottom: 1.25rem; }
+.login-switch { text-align: center; margin: 1.25rem 0 0; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .9375rem; color: var(--muted); }
+.login-switch .btn-link, .login-note .btn-link { padding: 0; vertical-align: baseline; color: var(--accent-deep); font-size: inherit; text-decoration: none; }
+.login-switch .btn-link:hover, .login-reset:hover { text-decoration: underline; }
+.login-note { text-align: center; margin: 0; font-size: .875rem; color: #8FA1B3; }
 
 /* Responsive */
 @media (max-width: 991.98px) {
@@ -152,3 +159,9 @@ body.admin.login-page { background: var(--ink); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Team */
+.team-you { display: inline-block; margin-left: .4rem; padding: .05rem .5rem; border-radius: 99px; background: var(--paper); color: var(--muted); font-size: .75rem; font-weight: 500; }
+.team-role { width: auto; min-width: 7.5rem; }
+.invite-link { background: var(--paper); border-radius: .375rem; padding: 1rem; }
+.invite-link .form-control { font-size: .875rem; }
